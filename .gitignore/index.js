@@ -263,7 +263,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
   if(oldUserChannel === undefined && newUserChannel !== undefined) {
 
-		var channel = client.channels.get('564728475320188939');
+		var channel = client.channels.get('564828305979605002');
 				var embed = new Discord.RichEmbed()
 				.setAuthor(newMember.user.username, newMember.user.avatarURL)
 				.setTitle('🔊 ' + newUserChannel.name)
@@ -274,7 +274,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
   } else if(newUserChannel === undefined){
 
-		var channel = client.channels.get('564728475320188939');
+		var channel = client.channels.get('564828305979605002');
 				var embed = new Discord.RichEmbed()
 				.setAuthor(oldMember.user.username, oldMember.user.avatarURL)
 				.setTitle('🔊 ' + oldUserChannel.name)
