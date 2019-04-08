@@ -8,11 +8,11 @@ const { get } = require("snekfetch");
 var opus = require('opusscript');
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
-const GOOGLE_API_KEY = ('AIzaSyCoXuuOv62orMf1IRNK4ORtigiL51TuMwM');
+const GOOGLE_API_KEY = (process.env.google);
 const youtube = new YouTube(GOOGLE_API_KEY);
 const queue = new Map();
 const ce = require("embed-creator");
-client.login('NTY0NzE2ODY1MzAyMjk4NjI1.XKr7zQ.7ZtzayixmpBQNAw5roZcbPxj6ZU');
+client.login(process.env.token);
 const api = "http://mcapi.us/server/status?ip=califorcraft.eu";
 
 // Lancement
@@ -200,7 +200,7 @@ client.on('message', message => {
 client.on('message', message => {
   if (message.content === prefix + 'aide') {
     message.channel.send(ce(
-      "#010101", {"name": `Aide`, "icon_url": ""}, "", "",
+      "#00BFFF", {"name": `Aide`, "icon_url": ""}, "", "",
       [{"name": "!myaw", "value": "Afficher une image de chat aléatoire (salon robot)."},
       {"name": "!califorcraft", "value": "Afficher le nombre de joueur en ligne."},
       {"name": "!play <youtube-url>", "value": "Ajouter une musique à la file d'attente."},
@@ -215,7 +215,7 @@ client.on('message', message => {
 client.on('message', message => {
   if (message.content === prefix + 'moderation') {
     message.channel.send(ce(
-      "#010101", {"name": `Aide`, "icon_url": ""}, "", "",
+      "#00BFFF", {"name": `Aide`, "icon_url": ""}, "", "",
       [{"name": "!kick <nom> <raison>", "value": "Ejecter un joueur."},
       {"name": "!ban <nom> <raison>", "value": "Bannir un joueur."},
       {"name": "!mute <nom> <raison>", "value": "Rendre muet un joueur."},
