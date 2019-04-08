@@ -56,7 +56,7 @@ client.on('ready', () => {
 client.on('guildMemberAdd', member => {
     var role = member.guild.roles.find("name", "Invité");
     member.addRole(role)
-    var channel = client.channels.get('4564721727997870090');
+    var channel = client.channels.get('564721727997870090');
     if (!channel) return;
     channel.send(ce(
       "#00FF00", {"name": member.guild.name, "icon_url": member.guild.iconURL}, "", "",
