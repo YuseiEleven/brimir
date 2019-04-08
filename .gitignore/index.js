@@ -4,14 +4,15 @@ const client = new Discord.Client();
 const prefix = "!";
 var PREFIX = "!";
 const snekfetch = require('snekfetch');
+const { get } = require("snekfetch");
 var opus = require('opusscript');
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
-const GOOGLE_API_KEY = (process.env.google);
+const GOOGLE_API_KEY = ('AIzaSyCoXuuOv62orMf1IRNK4ORtigiL51TuMwM');
 const youtube = new YouTube(GOOGLE_API_KEY);
 const queue = new Map();
 const ce = require("embed-creator");
-client.login(process.env.token);
+client.login('NTY0NzE2ODY1MzAyMjk4NjI1.XKr7zQ.7ZtzayixmpBQNAw5roZcbPxj6ZU');
 const api = "http://mcapi.us/server/status?ip=califorcraft.eu";
 
 // Lancement
@@ -47,7 +48,7 @@ client.on('ready', () => {
 	setInterval(() => {
 			const index = Math.floor(Math.random() * (activities_list.length - 1) + 1);
 			client.user.setActivity(activities_list[index]);
-	}, 2000); //10 seconds=10000
+	}, 1000); //10 seconds=10000
 });
 
 
@@ -150,7 +151,6 @@ client.on("message", msg => {
       var mc = msg.content.split(" ")[2];
       if (!mem)
         return msg.reply('Veuillez mentionner un utilisateur. (!mute @test#1234 test)');
-      if (mem.hasPermission("MUTE_MEMBERS")) return;
       if (!mc)
         return msg.reply('Veuillez ajouter une raison. (!mute @test#1234 test)');
       if (msg.guild.roles.find("name", "Muet")) {
@@ -203,26 +203,37 @@ client.on('message', message => {
       "#010101", {"name": `Aide`, "icon_url": ""}, "", "",
       [{"name": "!myaw", "value": "Afficher une image de chat aléatoire (salon robot)."},
       {"name": "!califorcraft", "value": "Afficher le nombre de joueur en ligne."},
-	  {"name": "!moderation", "value": "Afficher les commandes de modération."}],
+      {"name": "!play <youtube-url>", "value": "Ajouter une musique à la file d'attente."},
+      {"name": "!play <nom de musique>", "value": "Effectuer une recheche sur YouTube."},
+      {"name": "!file", "value": "Afficher la liste des musiques en file d'attente."},
+      {"name": "!info", "value": "Afficher le titre de la musique en cours de lecture."},
+	    {"name": "!moderation", "value": "Afficher les commandes de modération."}],
       {"thumbnail": "", "image": ""}, true
     ))
+  }
+});
+client.on('message', message => {
   if (message.content === prefix + 'moderation') {
     message.channel.send(ce(
       "#010101", {"name": `Aide`, "icon_url": ""}, "", "",
       [{"name": "!kick <nom> <raison>", "value": "Ejecter un joueur."},
       {"name": "!ban <nom> <raison>", "value": "Bannir un joueur."},
-	  {"name": "!mute <nom> <raison>", "value": "Rendre muet un joueur."},
+      {"name": "!mute <nom> <raison>", "value": "Rendre muet un joueur."},
+      {"name": "!unmute", "value": "Rendre la parole a un joueur."},
       {"name": "!supprimer <2-100>", "value": "Supprimer des messages dans un salon textuel."},
       {"name": "!debug", "value": "Debug le bot."},
-	  {"name": "!sondage;<Question>;<Choix1>;<Choix2>;<Choix3>", "value": "Lancer un sondage (affiché dans le salon sondage)."}],
-      {"text": "", "icon_url": ""}, 
+      {"name": "!sondage;<Question>;<Choix1>;<Choix2>;<Choix3>", "value": "Lancer un sondage (affiché dans le salon sondage)."},
+      {"name": "!volume <1-5>", "value": "Régler le volume de la musique."},
+      {"name": "!suivant", "value": "Passer à la musique suivante dans la file d'attente."},
+      {"name": "!pause", "value": "Mettre en pausse la musique en cours."},
+      {"name": "!reprise", "value": "Reprendre la lecture de la musique."},
+      {"name": "!stop", "value": "Stopper la musique en cours."}],
       {"thumbnail": "", "image": ""}, true
     ))
   }
-  }
 });
 client.on('message', msg => {
-    var channel = client.channels.get('564726912489095169');
+  var channel = client.channels.get('564726912489095169');
 	if(msg.content.startsWith(prefix + 'myaw')) {
 		try {
 			get('https://aws.random.cat/meow').then(res => {
@@ -231,25 +242,22 @@ client.on('message', msg => {
 				return channel.send({embed});
 			});
 		} catch(err) {
-			return channel.send(error.stack);
+			return channel.send(err.stack);
 		}
-    }});
-
-// Dialogues
-client.on('message', message => {
-    if(message.content === 'Bonjour')
-          message.channel.send("Coucou!");
-    if(message.content === 'Salut')
-          message.channel.send("Salut :)");
-    if(message.content === 'salut')
-          message.channel.send("Salut :)");
-    if(message.content === 'Bonjour')
-          message.channel.send("Coucou!");
-    if(message.content === 'Kedeania')
-          message.channel.send("est mignonne. :p");
-      if(message.content === 'kedeania')
-          message.channel.send("est mignonne. :p");
-  });
+  }
+  if(msg.content === 'Bonjour')
+    msg.channel.send("Coucou!");
+  if(msg.content === 'Salut')
+    msg.channel.send("Salut :)");
+  if(msg.content === 'salut')
+    msg.channel.send("Salut :)");
+  if(msg.content === 'Bonjour')
+    msg.channel.send("Coucou!");
+  if(msg.content === 'Kedeania')
+    msg.channel.send("est mignonne. :p");
+  if(msg.content === 'kedeania')
+    msg.channel.send("est mignonne. :p");
+});
 
 //Historique
 client.on('message', (message)=>{
@@ -321,8 +329,8 @@ client.on('message', async msg => {
 	const searchString = args.slice(1).join(' ');
 	const url = args[1] ? args[1].replace(/<(.+)>/g, '$1') : '';
   const serverQueue = queue.get(msg.guild.id);
-  var channel = client.channels.get('500237741032996865');
-  const voiceChannel = client.channels.get("499964668719136779");
+  var channel = client.channels.get('564845605155897344');
+  const voiceChannel = client.channels.get("564804751796076555");
 	let command = msg.content.toLowerCase().split(' ')[0];
 	command = command.slice(PREFIX.length)
 
