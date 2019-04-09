@@ -253,10 +253,6 @@ client.on('message', msg => {
     msg.channel.send("Salut :)");
   if(msg.content === 'Bonjour')
     msg.channel.send("Coucou!");
-  if(msg.content === 'Kedeania')
-    msg.channel.send("est mignonne. :p");
-  if(msg.content === 'kedeania')
-    msg.channel.send("est mignonne. :p");
 });
 
 //Historique
