@@ -347,9 +347,7 @@ client.on('message', async msg => {
 					var videos = await youtube.searchVideos(searchString, 10);
 					let index = 0;
 					channel.send(`
-
 ${videos.map(video2 => `**${++index} -** ${video2.title}`).join('\n')}
-
 Veuillez écrire une valeur allant de 1 à 10 pour sélectionner l'un des résultats de la recherche.
 					`);
 					// eslint-disable-next-line max-depth
@@ -397,9 +395,7 @@ Veuillez écrire une valeur allant de 1 à 10 pour sélectionner l'un des résul
 		if (!serverQueue) return channel.send('❌ Aucune musique en cours de lecture.');
 		return channel.send(`
 __**File d'attente:**__
-
 ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
-
 🎶 **Lecture en cours:** ${serverQueue.songs[0].title}
 		`);
 	} else if (command === 'pause') {
@@ -411,7 +407,7 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 		}
 		return channel.send('❌ Aucune musique en cours de lecture.');
 	} else if (command === 'reprise') {
-    if (!message.member.hasPermission("MUTE_MEMBERS")) return;
+    if (!msg.member.hasPermission("MUTE_MEMBERS")) return;
 		if (serverQueue && !serverQueue.playing) {
 			serverQueue.playing = true;
 			serverQueue.connection.dispatcher.resume();
@@ -424,6 +420,7 @@ ${serverQueue.songs.map(song => `**-** ${song.title}`).join('\n')}
 });
 
 async function handleVideo(video, msg, voiceChannel, playlist = false) {
+	var channel = client.channels.get('564845605155897344');
 	const serverQueue = queue.get(msg.guild.id);
 	console.log(video);
 	const song = {
@@ -466,6 +463,7 @@ function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
 
 	if (!song) {
+		serverQueue.voiceChannel.leave();
 		queue.delete(guild.id);
 		return;
 	}
