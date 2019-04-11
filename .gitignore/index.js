@@ -18,10 +18,10 @@ const api = "http://mcapi.us/server/status?ip=califorcraft.eu";
 // Lancement
 client.on('ready', () => {
     console.log('Bot en ligne!');
-    const voiceChannel = client.channels.get("564804751796076555");
-      voiceChannel.join().then(connection => {
-      console.log("Connecté.");
-      });
+   // const voiceChannel = client.channels.get("564804751796076555");
+    //  voiceChannel.join().then(connection => {
+    //  console.log("Connecté.");
+     // });
 });
 client.on('message', message => {
     const voiceChannel = client.channels.get("564804751796076555");
@@ -482,4 +482,4 @@ function play(guild, song) {
 	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 
 	serverQueue.textChannel.send(`🎶 Démarrage de la lecture: **${song.title}**`);
-};
+}
