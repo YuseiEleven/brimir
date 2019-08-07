@@ -178,7 +178,7 @@ exports.commands = {
                                 msg.channel.send("http://mylittlefacewhen.com/" + mlfwThing.objects[0].image.toString());
                             }
                             else {
-                                msg.channel.send("No images found. Try different tags.")
+                                msg.channel.send("Pas d'image trouvé. Essayez un tag différent.")
                             }
                         }
                         else {
@@ -199,12 +199,12 @@ exports.commands = {
                 usage: "!servers",
                 description: "List of servers I am in.",
                 process: function(bot, msg, params, choice){
-                    msg.channel.send("**I am currently serving in:** \n```\n" + bot.guilds.map(g=>g.name).join("\n") + "\n```");
+                    msg.channel.send("**Je suis connecté sur:** \n```\n" + bot.guilds.map(g=>g.name).join("\n") + "\n```");
                 }
             },
 
-            "avie": {
-                usage: "[Optional] <name or name portion> (Ex. '!avie Ian' or '!avie')",
+            "image": {
+                usage: "[Optional] <name or name portion> (Ex. '!image name' or '!image')",
                 description: "Returns the avatar image of the specified user. If no user is specified, returns the avatar image of the author.",
                 process: function(bot, msg, params, choice){
                     if (params) {
@@ -249,7 +249,7 @@ exports.commands = {
                                 }
                             }
                             if (match === false) {
-                                msg.channel.send("I couldn't find the user you requested.");
+                                msg.channel.send("Je ne trouve pas le membre que vous avez indiqué.");
                             }
                         }
                     }
@@ -259,15 +259,15 @@ exports.commands = {
                 }
             },
 
-            "pick": {
-                usage: "<options to pick from> (Ex. !pick option1, option2, option3)",
+            "aléatoire": {
+                usage: "<options to pick from> (Ex. !aléatoire option1, option2, option3)",
                 description: "Will randomly pick from the number of options given by the user, separated by commas and spaces.",
                 process: function(bot, msg, params, choice){
                     var options = params.split(",");
                     var randomChoice = Math.floor(Math.random() * options.length);
                     options[0] = " " + options[0];
 
-                    msg.channel.send("You must go with" + options[randomChoice] + ", " + msg.author + ".");
+                    msg.channel.send("Mon choix est" + options[randomChoice] + ", " + msg.author + ".");
                 }
             },
 
@@ -287,7 +287,7 @@ exports.commands = {
                     var regMention = /^<[@\w]+>$/;
                     if(params == ""){
                         if(!userInfo[msg.author.id]){
-                            msg.channel.send("It appears to me that you don't have a profile set up yet! Get started with `!info help` c:");
+                            msg.channel.send("Tu n'as pas encore de profil! Fait la commande !info aide");
                             return
                         }
 
@@ -295,7 +295,7 @@ exports.commands = {
 
                         var toAuthor = msg.member.nickname != null ? msg.member.nickname : msg.author.username;
 
-                        infoEmbed.setAuthor(toAuthor + "'s Profile", msg.author.avatarURL);
+                        infoEmbed.setAuthor("Profile de " + toAuthor, msg.author.avatarURL);
                         infoEmbed.setColor(16181338);
                         infoEmbed.setTimestamp(userInfo[msg.author.id]["updatedAt"]);
                         if(userInfo[msg.author.id]["image"].value != ""){
@@ -311,8 +311,8 @@ exports.commands = {
                         msg.channel.sendEmbed(infoEmbed);
                         return;
                     }
-                    else if(options[0] == "help"){
-                        help = "To use this command, you can do one of the following:\n`!info add <category>` will allow you to add to a certain category.\n**Available categories:** `"
+                    else if(options[0] == "aide"){
+                        help = "Pour créer ou ajouter des informations à votre profil:\n`!info add <categorie> <information>` (ex: !info add jeux League Of Legends).\n**Categories:** `"
                         for(category in infoCategories){
                             if(category != "updatedAt"){
                                 help += category + ", ";
@@ -324,7 +324,7 @@ exports.commands = {
                     else if(regMention.exec(options[0]) != null){
                         user = msg.guild.members.get(options[0].replace(/[^\w\s]/gi, ''));
                         if(!userInfo[user.id]){
-                            msg.channel.send("It appears to me that this user does not have a profile set up yet.");
+                            msg.channel.send("Ce membre n'a pas encore créé de profil. (rappel pour créer ou ajouter des informations à son profil: !info aide)");
                             return;
                         }
 
@@ -332,7 +332,7 @@ exports.commands = {
 
                         var toAuthor = user.nickname != null ? user.nickname : user.user.username;
 
-                        infoEmbed.setAuthor(toAuthor + "'s Profile", user.user.avatarURL);
+                        infoEmbed.setAuthor("Profil de " + toAuthor, user.user.avatarURL);
                         infoEmbed.setColor(16181338);
                         infoEmbed.setTimestamp(userInfo[user.id]["updatedAt"]);
                         if(userInfo[user.id]["image"].value != ""){
@@ -362,7 +362,7 @@ exports.commands = {
                     else if(options[0] == "add"){
                         category = options[1].toLowerCase();
                         if(!infoCategories[category]){
-                            msg.channel.send("Silly, I don't think '" + category + "' is a category.");
+                            msg.channel.send("La catégorie `" + category + "` n'existe pas.");
                             return;
                         }
 
@@ -380,7 +380,7 @@ exports.commands = {
                         elementsString = elementsString.substring(0, elementsString.length - 2);
 
                         if(elementsString == ""){
-                        	msg.channel.send("You gave me no information here. Adding an empty field won't do much, don't you think?");
+                        	msg.channel.send("Vous n'avez écrit aucune information.");
                         	return;
                         }
 
@@ -394,7 +394,7 @@ exports.commands = {
                           if (err) throw err;
                           console.log('It\'s saved!');
                         });
-                        msg.channel.send("The category `" + category + "` has been updated successfully.");
+                        msg.channel.send("Catégorie `" + category + "` mise à jour avec succès.");
                     }
                     else if(options[0] == "remove"){
                     	return;
@@ -413,13 +413,12 @@ exports.commands = {
                         request('https://8ball.delegator.com/magic/JSON/' + params, function(error, response, body){
                             if (!error && response.statusCode == 200){
                                 answer = JSON.parse(body);
-                                botResponse = "*The Magical 8 Ball answers...*\n";
                                 botResponse += "`Question:` **" + params + "**\n";
-                                botResponse += "`Answer:` **" + answer.magic.answer + "**";
+                                botResponse += "`Réponse:` **" + answer.magic.answer + "**";
                                 msg.channel.send(botResponse);
                             }
                             else{
-                                msg.channel.send("Whoops, I couldn't turn into an 8 Ball: " + error);
+                                msg.channel.send("Whoops, erreur: " + error);
                             }
                         });
                     }
