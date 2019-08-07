@@ -72,14 +72,14 @@ client.on('messageDelete', (message)=>{
 	}
 });
 
-client.on('messageUpdate', (message)=>{
+client.on('messageUpdate', (oldMessage, newMessage)=>{
 	var channel = client.channels.get('603552469263450112');
-	if (message.author.bot) return;
-	if (message.channel.type.toLowerCase() == 'dm' || message.channel.type.toLowerCase() == 'text') {
+	if (oldMessage.author.bot) return;
+	if (oldMessage.channel.type.toLowerCase() == 'dm' || oldMessage.channel.type.toLowerCase() == 'text') {
 			var embed = new Discord.RichEmbed()
-			.setAuthor(message.author.username, message.author.avatarURL)
-			.setTitle('Message édité #' + message.channel.name)
-			.setDescription(message.content)
+			.setAuthor(oldMessage.author.username, oldMessage.author.avatarURL)
+			.setTitle('Message édité #' + oldMessage.channel.name)
+			.setDescription(oldMessage.content + " Nouveau message -> " + newMessage.content)
 			.setTimestamp(new Date())
 			.setColor('#FF00FF');
 			channel.send(embed);
