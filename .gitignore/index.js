@@ -3,6 +3,7 @@ var fs = require("fs");
 var commands = require('./commands.js').commands;
 var client = new Discord.Client({autoReconnect: true, disableEvents: ["TYPING_START", "TYPING_STOP", "GUILD_MEMBER_SPEAKING", "GUILD_MEMBER_AVAILABLE", "PRESSENCE_UPDATE"]});
 const { get } = require("snekfetch");
+var bot = new Discord.Client({autoReconnect: true, disableEvents: ["TYPING_START", "TYPING_STOP", "GUILD_MEMBER_SPEAKING", "GUILD_MEMBER_AVAILABLE", "PRESSENCE_UPDATE"]});
 const ce = require("embed-creator");
 client.login(process.env.token);
 const prefix = '!';
@@ -329,8 +330,17 @@ client.on('message', msg => {
 
 
 //TEST
-client.on("message", function (msg) {
-    if (msg.author.id != client.user.id && ((msg.channel.type === "dm" && msg.content[0] === "!"))) {
+bot.on("message", function (msg) {
+    let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
+    if(msg.channel.type != "dm" && !serversInfo[msg.guild.id]){
+        serversInfo[msg.guild.id] = serverParams;
+        fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
+          if (err) throw err;
+          console.log('It\'s saved!');
+        });
+    }
+    //check if message is a command
+    if (msg.author.id != bot.user.id && ((msg.channel.type === "dm" && msg.content[0] === "!") || (msg.channel.type != "dm" && msg.content[0] === serversInfo[msg.guild.id].prefix))) {
         var msgcmd = msg.content.split(" ")[0].substring(1);
         var params = msg.content.substring(msgcmd.length + 2);
         for(var module in commands){
@@ -409,7 +419,7 @@ client.on("message", function (msg) {
         else if(cmd) {
             console.log("treating " + msg.content + " from " + msg.author + " as command");
             var choice = Math.floor((Math.random() * 9));
-            cmd.process(client, msg, params, choice);
+            cmd.process(bot, msg, params, choice);
         }
         else {
             return;
