@@ -49,9 +49,8 @@ client.on('message', (message)=>{
 	if (message.author.bot) return;
 	if (message.channel.type.toLowerCase() == 'dm' || message.channel.type.toLowerCase() == 'text') {
 			var embed = new Discord.RichEmbed()
-			.addField('Message envoyé')
 			.setAuthor(message.author.username, message.author.avatarURL)
-			.setTitle('#' + message.channel.name)
+			.setTitle('Message envoyé #' + message.channel.name)
 			.setDescription(message.content)
 			.setTimestamp(new Date())
 			.setColor('#FFFFFF');
@@ -64,12 +63,11 @@ client.on('messageDelete', (message)=>{
 	if (message.author.bot) return;
 	if (message.channel.type.toLowerCase() == 'dm' || message.channel.type.toLowerCase() == 'text') {
 			var embed = new Discord.RichEmbed()
-			.addField('Message supprimé')
 			.setAuthor(message.author.username, message.author.avatarURL)
-			.setTitle('#' + message.channel.name)
+			.setTitle('Message supprimé #' + message.channel.name)
 			.setDescription(message.content)
 			.setTimestamp(new Date())
-			.setColor('#FFFFFF');
+			.setColor('#FF0000');
 			channel.send(embed);
 	}
 });
@@ -79,12 +77,11 @@ client.on('messageUpdate', (message)=>{
 	if (message.author.bot) return;
 	if (message.channel.type.toLowerCase() == 'dm' || message.channel.type.toLowerCase() == 'text') {
 			var embed = new Discord.RichEmbed()
-			.addField('Message édité')
 			.setAuthor(message.author.username, message.author.avatarURL)
-			.setTitle('#' + message.channel.name)
+			.setTitle('Message édité #' + message.channel.name)
 			.setDescription(message.content)
 			.setTimestamp(new Date())
-			.setColor('#FFFFFF');
+			.setColor('#FF00FF');
 			channel.send(embed);
 	}
 });
