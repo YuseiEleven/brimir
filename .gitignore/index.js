@@ -171,7 +171,7 @@ bot.on("message", function (msg) {
 });
 
 const { Client, Util } = require('discord.js');
-const PREFIX } = '!';
+const PREFIX = '!';
 const ytdl = require('ytdl-core');
  
 const client = new Client({ disableEveryone: true });
