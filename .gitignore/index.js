@@ -300,3 +300,32 @@ client.on("message", msg => {
     }
   }
 });
+
+//Autres
+client.on('message', msg => {
+	if(msg.content.startsWith(prefix + 'myaw')) {
+		try {
+			get('https://aws.random.cat/meow').then(res => {
+				const embed = new Discord.RichEmbed()
+				.setImage(res.body.file)
+				var channel = client.channels.get('603550043827601409');
+				return channel.send({embed});
+			});
+		} catch(err) {
+			return msg.channel.send(error.stack);
+		}
+	}});
+
+client.on('message', msg => {
+	if(msg.content.startsWith(prefix + 'ouaf')) {
+		try {
+			get('https://random.dog/woof.json').then(res => {
+				const embed = new Discord.RichEmbed()
+				.setImage(res.body.url)
+				var channel = client.channels.get('603588020758773780');
+				return channel.send({embed});
+			});
+		} catch(err) {
+			return msg.channel.send(error.stack);
+		}
+	}});
