@@ -175,10 +175,8 @@ const PREFIX = '!';
 const ytdl = require('ytdl-core');
  
 const client = new Client({ disableEveryone: true });
- 
-client.on('ready', () => console.log('Ready!'));
 
-client.on('message', async msg => {
+bot.on('message', async msg => {
         if (msg.author.bot) return;
         if (!msg.content.startsWith('!')) return
         const args = msg.content.split(' ')
