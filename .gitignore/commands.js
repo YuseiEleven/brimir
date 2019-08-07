@@ -413,7 +413,7 @@ exports.commands = {
                         request('https://8ball.delegator.com/magic/JSON/' + params, function(error, response, body){
                             if (!error && response.statusCode == 200){
                                 answer = JSON.parse(body);
-                                botResponse += "`Question:` **" + params + "**\n";
+                                botResponse = "`Question:` **" + params + "**\n";
                                 botResponse += "`Réponse:` **" + answer.magic.answer + "**";
                                 msg.channel.send(botResponse);
                             }
