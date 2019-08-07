@@ -38,18 +38,10 @@ catch(e){
 }
 
 try{
-    var auth = require("./auth.json");
-}
-catch(e){
-    console.log("You aren't getting very far without an 'auth.json'... just sayin'.");
-    process.exit();
-}
-
-try{
     var YouTube = require('youtube-node');
     var yt = new YouTube();
 
-    yt.setKey(auth.yt);
+    yt.setKey(process.env.APIKEY);
     yt.addParam('type', 'video');
 }
 catch(e){
