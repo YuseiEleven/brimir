@@ -66,7 +66,7 @@ bot.on('ready', () => {
 	console.log("Myaw");
 	setInterval(() => {
 			const index = Math.floor(Math.random() * (activities_list.length - 1) + 1);
-			client.user.setActivity(activities_list[index], "WATCHING");
+			bot.user.setActivity(activities_list[index], "WATCHING");
 	}, 5000); //10 seconds=10000
 });
 
