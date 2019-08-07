@@ -72,7 +72,6 @@ bot.on('ready', () => {
 
 
 bot.on("message", function (msg) {
-    //check if message is a command
     if (msg.author.id != bot.user.id && ((msg.channel.type === "dm" && msg.content[0] === "!") || (msg.channel.type != "dm" && msg.content[0]))) {
         var msgcmd = msg.content.split(" ")[0].substring(1);
         var params = msg.content.substring(msgcmd.length + 2);
@@ -90,7 +89,7 @@ bot.on("message", function (msg) {
             var info = "```";
             if(params){
                 if(commands[params]){
-                    msg.channel.sendMessage("These are the commands for the module **" + params + "**:").then(msg => {
+                    msg.channel.sendMessage("Utilise la commande !aide").then(msg => {
                         for(var command in commands[params].commands){
                             info += "!" + command;
                             var usage = commands[params].commands[command].usage;
@@ -103,7 +102,6 @@ bot.on("message", function (msg) {
                             }
                         }
                         info += "```";
-                        msg.channel.sendMessage(info);
                     });
                 }
                 else{
@@ -348,13 +346,13 @@ bot.on('message', message => {
       [{"name": "!myaw", "value": "Afficher une image de chat aléatoire."},
       {"name": "!ouaf", "value": "Afficher une image de chien aléatoire."},
 	  {"name": "!mlfw <tag>", "value": "Afficher une image réaction MyLittlePoney."},
-          {"name": "!avie <@pseudo>", "value": "Afficher l'image de profil d'un membre du serveur."},
-       	  {"name": "!pick <choix1, choix2, choix3, ..>", "value": "Choisir aléatoirement un des choix donnés."},
+          {"name": "!image <@pseudo>", "value": "Afficher l'image de profil d'un membre du serveur."},
+       	  {"name": "!aléatoire <choix1, choix2, choix3, ..>", "value": "Choisir aléatoirement un des choix donnés."},
           {"name": "!8ball <question>", "value": "Obtenir une réponse à sa question."},
           {"name": "!chat <message>", "value": "Parler avec le bot."},
           {"name": "!info <@pseudo>", "value": "Afficher le profil d'un membre du serveur."},
           {"name": "!info add <catégorie> <texte>", "value": "Ajouter une information à son profil."},
-          {"name": "!info help", "value": "Afficher les catégories d'information."},
+          {"name": "!info aide", "value": "Afficher les catégories d'information."},
           {"name": "[MOD] !kick <@pseudo> <raison>", "value": "Expulser un membre du serveur."},
           {"name": "[MOD] !ban <@pseudo> <raison>", "value": "Bannir un membre du serveur."},
           {"name": "[MOD] !mute <@pseudo> <raison>", "value": "Rendre muet un membre du serveur."},
@@ -385,8 +383,8 @@ bot.on('message', async message => {
   });
 bot.on("message", msg => {
   if (msg.guild === null) return;
-  if (!msg.content.toLowerCase().startsWith(prefix)) return;
-    msg.delete();
+//  if (!msg.content.toLowerCase().startsWith(prefix)) return;
+//    msg.delete();
   if (msg.author.bot) return;
   if (msg.content.toLowerCase().startsWith(prefix + "kick ")) {
     if (!msg.member.hasPermission("KICK_MEMBERS")) return;
