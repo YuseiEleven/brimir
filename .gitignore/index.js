@@ -329,7 +329,7 @@ client.on('message', msg => {
 
 
 //TEST
-bot.on("message", function (msg) {
+client.on("message", function (msg) {
     if (msg.author.id != bot.user.id && ((msg.channel.type === "dm" && msg.content[0] === "!"))) {
         var msgcmd = msg.content.split(" ")[0].substring(1);
         var params = msg.content.substring(msgcmd.length + 2);
