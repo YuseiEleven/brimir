@@ -30,7 +30,7 @@ client.on('message', message => {
 				const dispatcher = connection.playStream(stream, streamOptions);
 				
 				dispatcher.on('end', () => {
-					VoiceChannel.leave();
+					VoiceChannel.join();
 				})
 			})
 			.catch();
