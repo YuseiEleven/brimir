@@ -349,12 +349,6 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 function play(guild, song) {
 	const serverQueue = queue.get(guild.id);
 
-	if (!song) {
-		serverQueue.voiceChannel.leave();
-		queue.delete(guild.id);
-		return;
-	}
-	console.log(serverQueue.songs);
 
 	const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
 		.on('end', reason => {
