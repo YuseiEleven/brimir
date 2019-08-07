@@ -26,7 +26,7 @@ catch(e){
     throw new Error(e);
 }
 
-
+const prefix = "!";
 const ce = require("embed-creator");
 const { get } = require("snekfetch");
 
