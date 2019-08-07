@@ -58,7 +58,7 @@ bot.on("ready", function () {
 
 bot.on("message", function (msg) {
     //check if message is a command
-    if (msg.author.id != bot.user.id && ((msg.channel.type === "dm" && msg.content[0] === "!") || (msg.channel.type != "dm" && msg.content[0] === serversInfo[msg.guild.id].prefix))) {
+    if (msg.author.id != bot.user.id && ((msg.channel.type === "dm" && msg.content[0] === "!"))) {
         var msgcmd = msg.content.split(" ")[0].substring(1);
         var params = msg.content.substring(msgcmd.length + 2);
         for(var module in commands){
