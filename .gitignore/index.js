@@ -279,4 +279,205 @@ bot.on('message', message => {
 
 
 
+//Messages d'informations
+bot.on('guildMemberAdd', member => {
+	var role = member.guild.roles.find("name", "Chaton");
+        member.addRole(role)
+	var channel = bot.channels.get('603555169849966602');
+	if (!channel) return;
+	channel.send(ce(
+	  "#00FF00", {"name": member.guild.name, "icon_url": member.guild.iconURL}, "", "",
+	  [{"name": "Passez un agréable moment en notre compagnie!", "value": member.user.tag }],
+	  {"text": "", "icon_url": member.guild.iconURL}, 
+	  {"thumbnail": member.user.displayAvatarURL}, true
+	));
+  });
+  bot.on('guildMemberRemove', member => {
+	var channel = bot.channels.get('603555169849966602');
+	if (!channel) return;
+	channel.send(ce(
+	  "#FF0000", {"name": member.guild.name, "icon_url": member.guild.iconURL}, "", "",
+	  [{"name": "A bientôt!", "value": member.user.tag }],
+	  {"text": "", "icon_url": member.guild.iconURL}, 
+	  {"thumbnail": member.user.displayAvatarURL}, true
+	));
+  });
+  bot.on('guildBanAdd', (guild, user) => {
+	var channel = bot.channels.get('603555169849966602');
+	if (!channel) return;
+	channel.send(ce(
+	  "#010101", {"name": guild.name, "icon_url": guild.iconURL}, "", "",
+	  [{"name": user.tag, "value": "est désormais banni." }],
+	  {"text": "", "icon_url": guild.iconURL}, 
+	  {"thumbnail": user.displayAvatarURL}, true
+	));
+  });
+  bot.on('guildBanRemove', (guild, user) => {
+	var channel = bot.channels.get('603555169849966602');
+	if (!channel) return;
+	channel.send(ce(
+	  "#EE82EE", {"name": guild.name, "icon_url": guild.iconURL}, "", "",
+	  [{"name": user.tag, "value": "est autorisé à nous rejoindre de nouveau."}],
+	  {"text": "", "icon_url": guild.iconURL}, 
+	  {"thumbnail": user.displayAvatarURL}, true
+	));
+  });
+
+//Sondage
+bot.on('message', message => {
+  const args = message.content.slice(prefix.length).trim().split(';');
+  const command = args.shift().toLowerCase();
+  if (command === "sondage") {
+    if(!message.member.hasPermission("KICK_MEMBERS")) return;
+    let question = args[0];
+    let choix1 = args[1];
+    let choix2 = args[2];
+    let choix3 = args[3];
+    if (args.length === 0)
+      return message.reply('**Mauvais format:** `!sondage;<Question>;<Choix1>;<Choix2>;<Choix3>`')
+  message.channel.send("~~-----------~~" + '\n' + '\n' + ":question:" + `**__${question}__**` + '\n'  + '\n' + "" + ":one:" + ` **${choix1}**` +  '\n' + ":two:" + ` **${choix2}**` +  '\n' + ":three:" + ` **${choix3}**` + '\n' + '\n' + "*(Créer par: " + message.author.username + ")*")
+  .then(function (message) {
+    message.react('1⃣').then(() => message.react('2⃣')).then(() => message.react('3⃣'));
+	})}});
+
+//aide
+bot.on('message', message => {
+  if (message.content === prefix + 'aide') {
+    message.channel.send(ce(
+      "#010101", {"name": `Aide`, "icon_url": ""}, "", "",
+      [{"name": "!myaw", "value": "Afficher une image de chat aléatoire."},
+      {"name": "!ouaf", "value": "Afficher une image de chien aléatoire."},
+	  {"name": "!mlfw <tag>", "value": "Afficher une image réaction MyLittlePoney."},
+          {"name": "!avie <@pseudo>", "value": "Afficher l'image de profil d'un membre du serveur."},
+       	  {"name": "!pick <choix1, choix2, choix3, ..>", "value": "Choisir aléatoirement un des choix donnés."},
+          {"name": "!8ball <question>", "value": "Obtenir une réponse à sa question."},
+          {"name": "!chat <message>", "value": "Parler avec le bot."},
+          {"name": "!info <@pseudo>", "value": "Afficher le profil d'un membre du serveur."},
+          {"name": "!info add <catégorie> <texte>", "value": "Ajouter une information à son profil."},
+          {"name": "!info help", "value": "Afficher les catégories d'information."},
+          {"name": "[MOD] !kick <@pseudo> <raison>", "value": "Expulser un membre du serveur."},
+          {"name": "[MOD] !ban <@pseudo> <raison>", "value": "Bannir un membre du serveur."},
+          {"name": "[MOD] !mute <@pseudo> <raison>", "value": "Rendre muet un membre du serveur."},
+          {"name": "[MOD] !unmute <@pseudo>", "value": "Redonner la parole à un membre du serveur."},
+	  {"name": "[MOD] !purge <2-100>", "value": "Supprimer des messages dans un salon textuel."},
+	  {"name": "[MOD] !sondage;<Question>;<Choix1>;<Choix2>;<Choix3>", "value": "Lancer un sondage."}],
+      {"text": "", "icon_url": ""}, 
+      {"thumbnail": "", "image": ""}, true
+    ))
+  }
+});
+
+//Modération
+bot.on('message', async message => {
+	if(message.author.bot) return;
+	if(message.content.indexOf(prefix) !== 0) return;
+	const args = message.content.slice(prefix.length).trim().split(/ +/g);
+	const command = args.shift().toLowerCase();
+	if(command === "purge") {
+	  if (!message.member.hasPermission("MANAGE_MESSAGES")) return;
+	  const deleteCount = parseInt(args[0], 10);
+	  if(!deleteCount || deleteCount < 2 || deleteCount > 100)
+		return message.reply("Veuillez indiquer un nombre compris entre 2 et 100 pour le nombre de messages à supprimer.");
+	  const fetched = await message.channel.fetchMessages({limit: deleteCount});
+	  message.channel.bulkDelete(fetched)
+		.catch(error => message.reply(`Impossible de supprimer les messages en raison de: ${error}`));
+	};
+  });
+bot.on("message", msg => {
+  if (msg.guild === null) return;
+  if (!msg.content.toLowerCase().startsWith(prefix)) return;
+    msg.delete();
+  if (msg.author.bot) return;
+  if (msg.content.toLowerCase().startsWith(prefix + "kick ")) {
+    if (!msg.member.hasPermission("KICK_MEMBERS")) return;
+    var mem = msg.mentions.members.first();
+    var mc = msg.content.split(" ")[2];
+    if (!mem)
+      return msg.reply('Veuillez mentionner un utilisateur. (!kick @test#1234)');
+    if (!mc)
+      return msg.reply('Veuillez ajouter une raison. (!kick @test#1234 test)');
+    mem.kick(mc).then(() => {
+      msg.channel.send(mem.user.tag + " a été kick pour " + mc + "." + " (par " + msg.author.tag + ")");
+    }).catch(e => {
+      msg.channel.send("Une erreur s'est produite!");
+    });
+  }
+  if (msg.content.toLowerCase().startsWith(prefix + "ban ")) {
+    if (!msg.member.hasPermission("BAN_MEMBERS")) return;
+    var mem = msg.mentions.members.first();
+    var mc = msg.content.split(" ")[2];
+    if (!mem)
+      return msg.reply('Veuillez mentionner un utilisateur. (!ban @test#1234 test)');
+    if (!mc)
+      return msg.reply('Veuillez ajouter une raison. (!ban @test#1234 test)');
+    mem.ban(mc).then(() => {
+      msg.channel.send(mem.user.tag + " a été banni pour " + mc + "." + " (par " + msg.author.tag + ")");
+    }).catch(e => {
+      msg.channel.send("Une erreur s'est produite!");
+    });
+  }
+  if (msg.content.toLowerCase().startsWith(prefix + "mute")) {
+    if (!msg.member.hasPermission("MUTE_MEMBERS")) return;
+    var mem = msg.mentions.members.first();
+    var mc = msg.content.split(" ")[2];
+    if (!mem)
+      return msg.reply('Veuillez mentionner un utilisateur. (!mute @test#1234 test)');
+    if (mem.hasPermission("MUTE_MEMBERS")) return;
+    if (!mc)
+      return msg.reply('Veuillez ajouter une raison. (!mute @test#1234 test)');
+    if (msg.guild.roles.find("name", "Muet")) {
+      mem.addRole(msg.guild.roles.find("name", "Muet")).then(() => {
+        msg.channel.send(mem.user.tag + " est désormais muet pour " + mc + "." + " (par " + msg.author.tag + ")");
+      }).catch(e => {
+        msg.channel.send("Une erreur s'est produite!");
+        console.log(e);
+      });
+
+    }
+  }
+  if (msg.content.toLowerCase().startsWith(prefix + "unmute")) {
+    if (!msg.member.hasPermission("MUTE_MEMBERS")) return;
+    var mem = msg.mentions.members.first();
+    if (!mem)
+      return msg.reply('Veuillez mentionner un utilisateur. (!unmute @test#1234)');
+    if (msg.guild.roles.find("name", "Muet")) {
+      mem.removeRole(msg.guild.roles.find("name", "Muet")).then(() => {
+        msg.channel.send(mem.user.tag + " n'est plus muet.");
+      }).catch(e => {
+        msg.channel.send("Une erreur s'est produite");
+        console.log(e);
+      });
+
+    }
+  }
+});
+
+//Autres
+bot.on('message', msg => {
+	if(msg.content.startsWith(prefix + 'myaw')) {
+		try {
+			get('https://aws.random.cat/meow').then(res => {
+				const embed = new Discord.RichEmbed()
+				.setImage(res.body.file)
+				var channel = bot.channels.get('603550043827601409');
+				return channel.send({embed});
+			});
+		} catch(err) {
+			return msg.channel.send(error.stack);
+		}
+	}});
+
+bot.on('message', msg => {
+	if(msg.content.startsWith(prefix + 'ouaf')) {
+		try {
+			get('https://random.dog/woof.json').then(res => {
+				const embed = new Discord.RichEmbed()
+				.setImage(res.body.url)
+				var channel = bot.channels.get('603588020758773780');
+				return channel.send({embed});
+			});
+		} catch(err) {
+			return msg.channel.send(error.stack);
+		}
+	}});
 
