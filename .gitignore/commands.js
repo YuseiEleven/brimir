@@ -1,12 +1,4 @@
-try {
-    var Discord = require("discord.js");
-}
-catch (e) {
-    console.log(e.stack);
-    console.log(process.version);
-    console.log("I think there is a complete lack of everything here... I mean, do you even want to start? There is no 'discord.js.'");
-    process.exit();
-}
+var Discord = require("discord.js");
 
 try {
     var fs = require("fs"); 
@@ -27,7 +19,7 @@ try{
     var exec = require('child_process').exec;
 }
 catch(e){
-    console.log("Now now, if you don't have 'child_process', Yoshi won't be able to restart.");
+    console.log("Now now, if you don't have 'child_process', won't be able to restart.");
 }
 
 try{
@@ -37,19 +29,12 @@ catch(e){
     console.log("You must get 'moment' in a TIMEly manner... just get the module.");
 }
 
-try{
-    var auth = require("./auth.json");
-}
-catch(e){
-    console.log("You aren't getting very far without an 'auth.json'... just sayin'.");
-    process.exit();
-}
 
 try{
     var YouTube = require('youtube-node');
     var yt = new YouTube();
 
-    yt.setKey(auth.yt);
+    yt.setKey(process.env.APIKEY);
     yt.addParam('type', 'video');
 }
 catch(e){
@@ -84,15 +69,8 @@ catch(e) {
 let userInfo = JSON.parse(fs.readFileSync('./data/info.json', 'utf8'));
 
 var confusResponses = [
-	"You... what, now?",
-	"Pardon me?",
-	"Hah, yeah... what?",
-	"Sorry, I have no idea what that means.",
-	"Come again?",
-	"Maybe you should try something else there, buddy.",
-	"Um, Y-Yoshi..?",
-	"I tried to understand, trust me, but I just cannot.",
-	"Nope, dunno what you need, pal."
+	"Je n'ai pas compris.",
+	"Je ne comprends pas ce que vous venez d'écrire."
 ]
 
 var estoBanList = [
@@ -136,14 +114,14 @@ var estoBanList = [
 ]
 
 var infoCategories = {
-    games: {alias: "Games", value: ""},
-    fursona: {alias: "Fursona", value: ""},
-    furaffinity: {alias: "FurAffinity", value: ""},
+    jeux: {alias: "Jeux", value: ""},
+    genre: {alias: "Genre", value: ""},
+    age: {alias: "Age", value: ""},
     twitter: {alias: "Twitter", value: ""},
     youtube: {alias: "YouTube", value: ""},
     steam: {alias: "Steam", value: ""},
-    nnid: {alias: "NNID", value: ""},
-    note: {alias: "Note", value: ""},
+    instagram: {alias: "Instagram", value: ""},
+    autres: {alias: "Autres", value: ""},
     image: {alias: "Image", value: ""},
     updatedAt: ""
 }
@@ -156,345 +134,8 @@ var songQueue = {
 exports.commands = {
     "mod": {
         description: "All commands useful for moderation and debugging of the bot.",
-        help: "!help mod",
+        help: "!help modération",
         commands: {
-            "ping": {
-                usage: "!ping",
-                description: "I'll respond with a \"pong.\" Useful for checking if I'm alive.",
-                process: function(bot, msg, params, choice){
-                    msg.channel.send("Pong!").then(m => m.edit(`Pong! | Took ${m.createdTimestamp - msg.createdTimestamp}ms`)) //This will show how fast the bot is responding
-                }
-            },
-
-            "bye": {
-                usage: "!bye",
-                description: "Shuts down the bot.",
-                process: function(bot, msg, params, choice){
-                    if (msg.author.id === "110932722322505728") {
-                        msg.channel.send("Goodbye, everyone!").then(message => {
-                            bot.destroy();
-                        });
-                    }
-                    else {
-                        msg.reply("I can't really take that order from you. Sorry. :c");
-                    }
-                }
-            },
-
-            "update": {
-                usage: "!update",
-                description: "Will check if there is a new updated available. If update is found, will attempt to restart with the new code.",
-                process: function(bot, msg, params, choice){
-                    if (msg.author.id === "110932722322505728"){
-                        if(bot.voiceConnection){
-                            bot.voiceConnection.destroy();
-                        }
-                        msg.channel.send("Checking for updates...");
-                        simpleGit().pull(function(error, update) {
-                            if(update && update.summary.changes) {
-                                msg.channel.send("Be right back!").then(message => {
-                                    exec('node YoshiBot.js', (error, stdout, stderr) => {
-                                        if (error) {
-                                            console.error(`exec error: ${error}`);
-                                            return;
-                                        }
-                                        console.log(`stdout: ${stdout}`);
-                                        console.log(`stderr: ${stderr}`);
-                                    });
-                                    bot.destroy();
-                                }).catch(console.log);
-                            }
-                            else{
-                                msg.channel.send("Already up to date.");
-                                console.log(error);
-                            }
-                        });
-                    }
-                    else{
-                        msg.reply("I can't really take that order from you. Sorry. :c");
-                    }
-                }
-            },
-
-            "restart": {
-                usage: "!restart",
-                description: "Forces Yoshi-Bot to restart without needing to update.",
-                process: function(bot, msg, params, choice){
-                    if (msg.author.id === "110932722322505728"){
-                        if(bot.voiceConnection){
-                            bot.voiceConnection.destroy();
-                        }
-                        msg.channel.send("Be right back!").then(message => {
-                            exec('node YoshiBot.js', (error, stdout, stderr) => {
-                                if (error) {
-                                    console.error(`exec error: ${error}`);
-                                    return;
-                                }
-                                console.log(`stdout: ${stdout}`);
-                                console.log(`stderr: ${stderr}`);
-                            });
-                            bot.destroy();
-                        }).catch(console.log);
-                    }
-                }
-            },
-
-            "clean": {
-                usage: "<number of messages to delete> (Ex. !clean 5)",
-                description: "Deletes the amount of given messages (as a number) in the channel.",
-                process: function(bot, msg, params, choice){
-                    if (msg.member.hasPermission('MANAGE_MESSAGES')){
-                        if(params){
-                            if(!isNaN(params)){
-                                msg.channel.fetchMessages({before: msg.id, limit: params}).then(messages => {
-                                    msg.channel.bulkDelete(messages);
-                                    msg.channel.send(params + " messages successfully deleted!");
-                                }).catch(console.log);
-                            }
-                            else{
-                                    msg.channel.send("That's not a number, silly.");
-                            }
-                        }
-                        else{
-                            msg.channel.send("I need to know how many messages to delete, buddy.");
-                        }
-                    }
-                    else{
-                        msg.reply("I can't really take that order from you. Sorry. :c");
-                    }
-                }
-            },
-
-            "role": {
-                usage: "<give or take> <user> <role name> (Ex. !role give @Ian#4208 Moderator)",
-                description: "Gives or takes a role from a user, depending on specified action.",
-                process: function(bot, msg, params, choice){
-                    if (msg.member.hasPermission('MANAGE_ROLES_OR_PERMISSIONS')){
-                        var options = params.split(" ");
-                        if(options.length < 3){
-                            msg.channel.send("The amount of parameters you gave me is incorrect. Usage: `!role <give or take> <user> <role name>`");
-                            return;
-                        }
-
-                        var roleString = "";
-                        for(var i = 2; i < options.length; i++){
-                            roleString += options[i] + " ";
-                        }
-
-                        var user = msg.guild.members.get(options[1].replace(/[^\w\s]/gi, ''));
-                        var role = msg.guild.roles.find('name', roleString.trim());
-                        if(user != null){
-                            if(role !== null){
-                                if(options[0] == "give"){
-                                    user.addRole(role.id).then(member => {
-                                        msg.channel.send("User " + user + " now has the role **" + roleString.trim() + "**.");
-                                    }).catch(console.error);
-                                }
-                                else if(options[0] == "take"){
-                                    user.removeRole(role.id).then(member => {
-                                        msg.channel.send("User " + user + " no longer has the role **" + roleString.trim() + "**.");
-                                    }).catch(console.error);
-                                }
-                                else{
-                                    msg.channel.send(confusResponses[choice]);
-                                }
-                            }
-                            else{
-                                msg.channel.send("\"" + roleString.trim() + "\" might not be a role in this server.");
-                            }
-                        }
-                        else{
-                            msg.channel.send("Sorry, I am unable to find the user \"" + options[1] + "\".");
-                        }
-                    }
-                    else{
-                        msg.reply("I can't really take that order from you. Sorry. :c");
-                    }
-                }
-            },
-
-            "kick": {
-                usage: "<user> (Ex. !kick @Ian#4208)",
-                description: "Kicks the specified user from the server.",
-                process: function(bot, msg, params, choice){
-                    if (msg.member.hasPermission("KICK_MEMBERS")){
-                        var user = msg.guild.members.get(params.replace(/[^\w\s]/gi, ''));
-                        if(user != null){
-                            user.kick().then(member => {
-                                msg.channel.send("User " + user + " has been kicked from the server.");
-                            }).catch(console.error);
-                        }
-                        else{
-                            msg.channel.send("Sorry, I am unable to find the user \"" + params + "\".");
-                        }
-                    }
-                    else{
-                        msg.reply("I can't really take that order from you. Sorry. :c");
-                    }
-                }
-            },
-
-            "ban": {
-                usage: "<user> (Ex. !ban @Ian#4208)",
-                description: "Bans the specified user from the server.",
-                process: function(bot, msg, params, choice){
-                    if (msg.member.hasPermission("BAN_MEMBERS")){
-                        var user = msg.guild.members.get(params.replace(/[^\w\s]/gi, ''));
-                        if(user != null){
-                            user.ban(7).then(member => {
-                                msg.channel.send("User " + user + " has been banned from the server.");
-                            }).catch(console.error);
-                        }
-                        else{
-                            msg.channel.send("Sorry, I am unable to find the user \"" + params + "\".");
-                        }
-                    }
-                    else{
-                        msg.reply("I can't really take that order from you. Sorry. :c");
-                    }
-                }
-            },
-
-            "config": {
-                usage: "<setting to configure> <parameter> (Ex. !config prefix ^)",
-                description: "Allows you to configure different settings about the bot for your server, such as a prefix for commands, logging, and welcome messages.",
-                process: function(bot, msg, params, choice){
-                	if(msg.channel.type == "dm"){
-                		msg.channel.send("You cannot change the settings for these Direct Messages (for now).");
-                		return;
-                	}
-                	let serversInfo = JSON.parse(fs.readFileSync('./data/servers.json', 'utf8'));
-                    if(msg.member.roles.find('name', ">> Bot Privs <<")){
-                        params += " ";
-                        var firstOption = params.substring(0, params.indexOf(" ")); 
-                        if(firstOption == "help"){
-                            var helpString = "Here's how you can configure the bot for your server:\n";
-                            helpString += "`!config prefix <special character>`: Customizes the prefix to use for commands in your server. Cannot be a number or a letter.\n";
-                            helpString += "`!config logging <(enable|disable)/channel> [channel link]`: Enables logging (deleted/edited messages) or sets the logging channel. A logging channel must be set to enable.\n";
-                            helpString += "`!config welcome <(enable|disable)/channel/message> [channel link/message]`: Enables welcome messages for new users, sets the channel to say welcomes in, or sets the welcome message.\n";
-                            msg.channel.send(helpString);
-                        }
-                        else if(firstOption == "prefix"){
-                            prefix = params.substring(params.indexOf(" ") + 1).trim();
-                            if(prefix.length > 2){
-                                msg.channel.send("Okay, buddy, I don't think having a prefix that long would be a good idea. Just saying.");
-                                return;
-                            }
-                            var regex = /^[^\w\s]+$/;
-                            if(regex.exec(prefix) != null){
-                                serversInfo[msg.guild.id].prefix = prefix;
-                                fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
-                                if (err) throw err;
-                                  console.log('It\'s saved!');
-                                });
-                                msg.channel.send("The prefix for this server has been successfully updated to `" + prefix + "`.");
-                            }
-                            else{
-                            	msg.channel.send("Remember, you can only use special characters for the server prefix. Examples: `!`,`$`,`^`,`.`,`,`,`!!`,`!%`, etc.");
-                            }
-                        }
-                        else if(firstOption == "logging"){
-                            otherOptions = params.substring(params.indexOf(" ") + 1).trim();
-                            otherOptions = otherOptions.split(" ");
-                            if(otherOptions[0] == "enable"){
-                            	if(serversInfo[msg.guild.id].log_channel != null){
-                            		serversInfo[msg.guild.id].logging_enabled = true;
-                            		fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
-	                                if (err) throw err;
-	                                  console.log('It\'s saved!');
-	                                });
-	                                msg.channel.send("Message logging has been **enabled** in this server.");
-	                                return;
-                            	}
-                            	msg.channel.send("To enable message logging, first **set a logging channel** with `!config logging channel <channel link>`.")
-                            }
-                            else if(otherOptions[0] == "disable"){
-                            	serversInfo[msg.guild.id].logging_enabled = false;
-                        		fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
-                                if (err) throw err;
-                                  console.log('It\'s saved!');
-                                });
-                            	msg.channel.send("Message logging has been **disabled** in this server.");
-                            }
-                            else if(otherOptions[0] == "channel"){
-                            	var channelRegex = /^<#[0-9]+>$/;
-                            	if(channelRegex.exec(otherOptions[1]) != null){
-                            		serversInfo[msg.guild.id].log_channel = otherOptions[1].replace(/[^\w\s]/gi, '');
-                            		fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
-	                                if (err) throw err;
-	                                  console.log('It\'s saved!');
-	                                });
-	                                msg.channel.send("The logging channel for this server has been successfully updated to " + otherOptions[1] + ".");
-	                                return;
-                            	}
-                            	msg.channel.send("I couldn't parse that as a channel link. Remember, a channel link looks like `#channel_name`.");
-                            }
-                            else{
-                            	msg.channel.send(confusResponses[choice]);
-                            }
-                        }
-                        else if(firstOption == "welcome"){
-                            otherOptions = params.substring(params.indexOf(" ") + 1).trim();
-                            otherOptions = otherOptions.split(" ");
-                            if(otherOptions[0] == "enable"){
-                                if(serversInfo[msg.guild.id].welcome_channel != null && serversInfo[msg.guild.id].welcome_channel != null){
-                                	serversInfo[msg.guild.id].welcome_enabled = true;
-                            		fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
-	                                if (err) throw err;
-	                                  console.log('It\'s saved!');
-	                                });
-	                                msg.channel.send("New member welcomes have been **enabled** in this server.");
-	                                return;
-                                }
-                                msg.channel.send("To enable new member welcomes, first **set a welcome channel** with `!config welcome channel <channel link>` **and then set a welcome message** with `!config welcome message <message>`.");
-                            }
-                            else if(otherOptions[0] == "disable"){
-                            	serversInfo[msg.guild.id].welcome_enabled = false;
-                        		fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
-                                if (err) throw err;
-                                  console.log('It\'s saved!');
-                                });
-                            	msg.channel.send("New member welcomes have been **disabled** in this server.");
-                            }
-                            else if(otherOptions[0] == "channel"){
-                            	var channelRegex = /^<#[0-9]+>$/;
-                            	if(channelRegex.exec(otherOptions[1]) != null){
-                            		serversInfo[msg.guild.id].welcome_channel = otherOptions[1].replace(/[^\w\s]/gi, '');
-                            		fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
-	                                if (err) throw err;
-	                                  console.log('It\'s saved!');
-	                                });
-	                                msg.channel.send("The welcoming channel for this server has been successfully updated to " + otherOptions[1] + ".");
-	                                return;
-                            	}
-                            	msg.channel.send("I couldn't parse that as a channel link. Remember, a channel link looks like `#channel_name`.");
-                            }
-                            else if(otherOptions[0] == "message"){
-                            	otherOptions[0] = "";
-                            	var welcomeMessage = otherOptions.join(" ");
-
-                            	serversInfo[msg.guild.id].welcome_message = welcomeMessage.substring(1);
-                            	fs.writeFile('./data/servers.json', JSON.stringify(serversInfo), (err) => {
-                                if (err) throw err;
-                                  console.log('It\'s saved!');
-                                });
-                                msg.channel.send("The welcome message for this server has been successfully updated to: \n```" + welcomeMessage.substring(1) + "```");
-                                return;
-                            }
-                            else{
-                            	msg.channel.send(confusResponses[choice]);
-                            }
-                        }
-                        else{
-                            msg.channel.send("Oh, let me give you a hand with that! Get started with `!config help` to learn about it! :3");
-                        }
-                    }
-                    else{
-                        msg.reply("I can't really take that order from you. You need a role by the name `>> Bot Privs <<`. Sorry. :c");
-                    }
-                }
-            },
-
             "test": {
                 usage: "lel",
                 description: "This is a testing space. It will change periodically as I need to test new things.",
@@ -509,61 +150,6 @@ exports.commands = {
         description: "All commands pertaining to image-hosting sites and image boards.",
         help: "!help images",
         commands: {
-            "e621": {
-                usage: "<tags> (Ex. !e621 canine, anthro, blue eyes)",
-                description: "It returns an image (rating based on channel) from e621 based on tags (separated by a comma and a space) given.",
-                process: function(bot, msg, params, choice){
-                    var tagesto = "";
-                    var tagestosplit = params.split(",");
-                    for (var i = 0; i < tagestosplit.length; i++) {
-                        tagestosplit[i] = tagestosplit[i].trim();
-                        tagestosplit[i] = tagestosplit[i].replace(/\s/g, "_");
-                        if(estoBanList.indexOf(tagestosplit[i]) != -1){
-                            msg.channel.send("No. Stop it.");
-                            return;
-                        }
-                    }
-
-                    tagesto = tagestosplit.join("+");
-
-                    if (msg.channel.type === "dm" || msg.channel.name.indexOf("the_art_gallery") != -1 || msg.channel.name.indexOf("furry") != -1 || msg.channel.name.indexOf("2am") != -1 || msg.channel.name.indexOf("nsfw") != -1) {
-                        console.log("Safe to post NSFW content.");
-                    }
-                    else {
-                        tagesto += "+rating:safe";
-                        if ((tagesto.indexOf("rating:explicit") != -1) || (tagesto.indexOf("penis") != -1) || (tagesto.indexOf("pussy") != -1) || (tagesto.indexOf("anus") != -1) || (tagesto.indexOf("dick") != -1) || tagesto.indexOf("rating:questionable") != -1 || tagesto.indexOf("genitalia") != -1 || tagesto.indexOf("genitals") != -1 || tagesto.indexOf("genital") != -1 || tagesto.indexOf("vagina") != -1 || tagesto.indexOf("cunt") != -1 || tagesto.indexOf("vaginal") != -1 || tagesto.indexOf("vaginal_penetration") != -1 || tagesto.indexOf("sex") != -1 || tagesto.indexOf("fuck") != -1 || tagesto.indexOf("intercourse") != -1 || tagesto.indexOf("cock") != -1) {
-                            msg.channel.send("That content isn't appropiate for this channel. Go be naughty elsewhere.", {files:[{attachment: __dirname + bruh.jpg}]});
-                            return;
-                        }
-                    }
-                    var estoHeader = {
-                        url: 'https://e621.net/post/index.json?tags=order:random+' + tagesto,
-                        headers: {
-                            'User-Agent': 'Yoshi-Bot/${process.version} (by NeoNinetales on e621)'
-                        }
-                    }
-
-                    request(estoHeader,
-                    function (error, response, body) {
-                        if (!error && response.statusCode == 200) {
-                            var estoThing = JSON.parse(body);
-                            if (typeof (estoThing[0]) != "undefined") {
-                                msg.channel.send(estoThing[0].file_url.toString());
-                                msg.channel.send("https://e621.net/post/show/" + estoThing[0].id.toString());
-                            }
-                            else {
-                                msg.channel.send("No images found. Try different tags.")
-                            }
-                        }
-                        else {
-                            console.log(error);
-                            msg.channel.send("The API isn't working and this is why I'm crashing.");
-                            msg.channel.send(error);
-                        }
-                    });
-                }
-            },
-
             "mlfw": {
                 usage: "<tags> (Ex. !mlfw twilight sparkle, happy)",
                 description: "Returns a pony reaction image based on tags (separated by a comma and a space) given.",
@@ -602,65 +188,6 @@ exports.commands = {
                     });
                 }
             },
-
-            "subr": {
-                usage: "<subreddit name> (Ex. !subr wheredidthesodago)",
-                description: "Will return a random post from the user given subreddit using reddit's own \"random.\"",
-                process: function(bot, msg, params, choice){
-                    request("https://www.reddit.com/r/" + params + "/random/.json", function (error, response, body) {
-                        if (!error && response.statusCode == 200) {
-                            var srThing = JSON.parse(body);
-                            if(typeof (srThing.data) !== "undefined"){
-                                msg.channel.send("I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
-                            }
-                            else {
-                                if (typeof(srThing[0].data.children[0].data.url) !== "undefined") {
-                                    msg.channel.send(srThing[0].data.children[0].data.url);
-                                }
-                            }
-                        }
-                        else {
-                            console.log(error);
-                            msg.channel.send("I don't believe that's a subreddit. ~~Either that or it's banned, you sicko.~~");
-                        }
-                    });
-                }
-            },
-
-            "woof": {
-                usage: "!woof",
-                description: "Returns a random woof image.",
-                process: function(bot, msg, params, choice){
-                    request("http://random.dog/woof", function (error, response, body) {
-                        if (!error && response.statusCode == 200) {
-                            if (typeof (body) != "undefined") {
-                                msg.channel.send("http://random.dog/" + body);
-                            }
-                            else {
-                                msg.channel.send("Things are going wrong all over.");
-                            }
-                        }
-                    });
-                }
-            },
-
-            "meow": {
-                usage: "!meow",
-                description: "Returns a random meow image.",
-                process: function(bot, msg, params, choice){
-                    request("http://random.cat/meow", function (error, response, body) {
-                        if (!error && response.statusCode == 200) {
-                            var meowThing = JSON.parse(body);
-                            if (typeof (meowThing.file) != "undefined") {
-                                msg.channel.send(meowThing.file);
-                            }
-                            else {
-                                msg.channel.send("Things are going wrong all over.");
-                            }
-                        }
-                    });
-                }
-            }
         }
     },
 
