@@ -1,6 +1,12 @@
 var Discord = require("discord.js");
 var fs = require("fs"); 
-var commands = require('./commands.js').commands;
+try{
+    var commands = require('./commands.js').commands;
+}
+catch(e){
+    console.log("You see, if you don't have a 'commands.js', you can't really command me to do things...");
+    throw new Error(e);
+}
 var client = new Discord.Client({autoReconnect: true, disableEvents: ["TYPING_START", "TYPING_STOP", "GUILD_MEMBER_SPEAKING", "GUILD_MEMBER_AVAILABLE", "PRESSENCE_UPDATE"]});
 const { get } = require("snekfetch");
 var bot = new Discord.Client({autoReconnect: true, disableEvents: ["TYPING_START", "TYPING_STOP", "GUILD_MEMBER_SPEAKING", "GUILD_MEMBER_AVAILABLE", "PRESSENCE_UPDATE"]});
