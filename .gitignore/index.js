@@ -15,7 +15,7 @@ client.on('message', message => {
 	if(message.author.bot)
 		return;
 	
-	if(message.content.toLowerCase().stratsWith("!play"))
+	if(message.content.toLowerCase().startsWith("!play"))
 	{
 		let args = message.content.split(" ");
 		let url = args[1];
