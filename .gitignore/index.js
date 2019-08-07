@@ -175,7 +175,7 @@ bot.on("message", function (msg) {
 
 
 const { Client, Util } = require('discord.js');
-const PREFIX = ! ;
+const PREFIX = !;
 const GOOGLE_API_KEY = (process.env.APIKEY);
 const YouTube = require('simple-youtube-api');
 const ytdl = require('ytdl-core');
