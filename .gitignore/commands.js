@@ -37,12 +37,19 @@ catch(e){
     console.log("You must get 'moment' in a TIMEly manner... just get the module.");
 }
 
+try{
+    var auth = require("./auth.json");
+}
+catch(e){
+    console.log("You aren't getting very far without an 'auth.json'... just sayin'.");
+    process.exit();
+}
 
 try{
     var YouTube = require('youtube-node');
     var yt = new YouTube();
 
-    yt.setKey(process.env.APIKEY);
+    yt.setKey(auth.yt);
     yt.addParam('type', 'video');
 }
 catch(e){
