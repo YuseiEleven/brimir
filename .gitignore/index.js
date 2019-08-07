@@ -62,7 +62,7 @@ const activities_list = [
 	"😹 Arrêtez les chatouilles",
 	"😽 Miuuuuu"
 	];
-bot.on('ready', function () => {
+bot.on('ready', () => {
 	console.log("Myaw");
 	setInterval(() => {
 			const index = Math.floor(Math.random() * (activities_list.length - 1) + 1);
