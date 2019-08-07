@@ -185,7 +185,7 @@ client.on('message', async msg => {
         let command = msg.content.toLowerCase().split(' ')[0]
         command = command.slice(PREFIX.length)
  
-        if (command === 'play') {
+        if (command === 'iplay') {
                 const voiceChannel = msg.member.voiceChannel;
                 if (!voiceChannel) return msg.channel.send('I\'m sorry but you need to be in a voice channel to play music!');
                 voiceChannel.join()
