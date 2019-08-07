@@ -8,6 +8,26 @@ catch (e) {
     process.exit();
 }
 
+
+
+
+
+const { Client, Util } = require('discord.js');
+const PREFIX = '!';
+const GOOGLE_API_KEY = (process.env.APIKEY);
+const YouTube = require('simple-youtube-api');
+const ytdl = require('ytdl-core');
+
+const youtube = new YouTube(GOOGLE_API_KEY);
+
+const queue = new Map();
+
+
+
+
+
+
+
 try {
     var fs = require("fs"); 
 }
@@ -173,21 +193,7 @@ bot.on("message", function (msg) {
 
 
 
-
-const { Client, Util } = require('discord.js');
-const PREFIX = '!';
-const GOOGLE_API_KEY = (process.env.APIKEY);
-const YouTube = require('simple-youtube-api');
-const ytdl = require('ytdl-core');
-
-const client = new Client({ disableEveryone: true });
-
-const youtube = new YouTube(GOOGLE_API_KEY);
-
-const queue = new Map();
-
-
-client.on('message', async msg => { // eslint-disable-line
+bot.on('message', async msg => { // eslint-disable-line
 	if (msg.author.bot) return undefined;
 	if (!msg.content.startsWith(PREFIX)) return undefined;
 
