@@ -345,7 +345,6 @@ bot.on('message', message => {
       "#010101", {"name": `Aide`, "icon_url": ""}, "", "",
       [{"name": "!myaw", "value": "Afficher une image de chat aléatoire."},
       {"name": "!ouaf", "value": "Afficher une image de chien aléatoire."},
-	  {"name": "!mlfw <tag>", "value": "Afficher une image réaction MyLittlePoney."},
           {"name": "!image <@pseudo>", "value": "Afficher l'image de profil d'un membre du serveur."},
        	  {"name": "!aléatoire <choix1, choix2, choix3, ..>", "value": "Choisir aléatoirement un des choix donnés."},
           {"name": "!8ball <question>", "value": "Obtenir une réponse à sa question."},
