@@ -146,51 +146,6 @@ exports.commands = {
         }
     },
 
-    "images": {
-        description: "All commands pertaining to image-hosting sites and image boards.",
-        help: "!help images",
-        commands: {
-            "mlfw": {
-                usage: "<tags> (Ex. !mlfw twilight sparkle, happy)",
-                description: "Returns a pony reaction image based on tags (separated by a comma and a space) given.",
-                process: function(bot, msg, params, choice){
-                    var tagmlfw = "";
-                    if (params.indexOf(',') != -1) {
-                        tagmlfw = ("\"" + params.substring(0, params.indexOf(',')) + "\"" + ",");
-                        var tagmlfwsplit = params.substring((params.indexOf(',') + 1),params.length).split(",");
-                        for (var i = 0; i < tagmlfwsplit.length; i++) {
-                            if (i === (tagmlfwsplit.length - 1)) {
-                                tagmlfw += "\"" + tagmlfwsplit[i].substring(1, tagmlfwsplit[i].length) + "\"";
-                            }
-                            else {
-                                tagmlfw += "\"" + tagmlfwsplit[i].substring(1, tagmlfwsplit[i].length) + "\","
-                            }
-                        }
-                    }
-                    else {
-                        tagmlfw = "\"" + params + "\"";
-                    }
-                    request("http://mylittlefacewhen.com/api/v2/face/?search=[" + tagmlfw + "]&order_by=random&format=json",
-                    function (error, response, body) {
-                        if (!error && response.statusCode == 200) {
-                            var mlfwThing = JSON.parse(body);
-                            if (typeof (mlfwThing.objects[0]) != "undefined") {
-                                msg.channel.send("http://mylittlefacewhen.com/" + mlfwThing.objects[0].image.toString());
-                            }
-                            else {
-                                msg.channel.send("Pas d'image trouvé. Essayez un tag différent.")
-                            }
-                        }
-                        else {
-                            console.log(error);
-                            msg.channel.send(error);
-                        }
-                    });
-                }
-            },
-        }
-    },
-
     "fun": {
         description: "All miscellaneous, recreational commands.",
         help: "!help fun",
