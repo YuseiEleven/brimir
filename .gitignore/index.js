@@ -93,15 +93,15 @@ bot.on("message", function (msg) {
                         for(var command in commands[params].commands){
                             info += "!" + command;
                             var usage = commands[params].commands[command].usage;
-                            if(usage){
-                                info += " " + usage;
-                            }
+//                            if(usage){
+//                                info += " " + usage;
+//                            }
                             var description = commands[params].commands[command].description;
-                            if(description){
-                                info += "\n\t" + description + "\n\n";
-                            }
+//                            if(description){
+//                                info += "\n\t" + description + "\n\n";
+//                            }
                         }
-                        info += "```";
+//                        info += "```";
                     });
                 }
                 else{
