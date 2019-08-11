@@ -91,7 +91,7 @@ bot.on("message", function (msg) {
                 if(commands[params]){
                     msg.channel.sendMessage("Utilise la commande !aide").then(msg => {
                         for(var command in commands[params].commands){
-                            info += "!" + command;
+//                            info += "!" + command;
                             var usage = commands[params].commands[command].usage;
 //                            if(usage){
 //                                info += " " + usage;
@@ -111,17 +111,17 @@ bot.on("message", function (msg) {
             else{
                 msg.channel.sendMessage("Please tell me which module you would like to learn about:").then(msg => {
                     for(var module in commands) {
-                        info += module;
+//                        info += module;
                         var help = commands[module].help;
                         if(help){
-                            info += " - " + help;
+//                            info += " - " + help;
                         }
                         var description = commands[module].description;
                         if(description){
-                            info += "\n\t" + description + "\n\n";
+//                            info += "\n\t" + description + "\n\n";
                         }
                     }
-                    info += "```";
+//                    info += "```";
                     msg.channel.sendMessage(info);
                 });
             }
