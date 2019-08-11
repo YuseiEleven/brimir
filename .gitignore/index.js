@@ -109,7 +109,7 @@ bot.on("message", function (msg) {
                 }
             }
             else{
-                msg.channel.sendMessage("Please tell me which module you would like to learn about:").then(msg => {
+//                msg.channel.sendMessage("Please tell me which module you would like to learn about:").then(msg => {
                     for(var module in commands) {
 //                        info += module;
                         var help = commands[module].help;
@@ -122,8 +122,8 @@ bot.on("message", function (msg) {
                         }
                     }
 //                    info += "```";
-                    msg.channel.sendMessage(info);
-                });
+//                    msg.channel.sendMessage(info);
+//                });
             }
         }
         else if(msgcmd == "eval"){
