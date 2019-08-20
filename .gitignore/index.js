@@ -4,7 +4,7 @@ try {
 catch (e) {
     console.log(e.stack);
     console.log(process.version);
-    console.log("I think there is a complete lack of everything here... I mean, do you even want to start? There is no 'discord.js.'");
+    console.log("discord js erreur");
     process.exit();
 }
 
@@ -13,7 +13,7 @@ try {
     var fs = require("fs"); 
 }
 catch(e) {
-    console.log("Well, no reading files, then. 'fs' is kinda necessary for that.");
+    console.log("fs erreur");
     process.exit()
 }
 
@@ -22,22 +22,13 @@ try{
     var commands = require('./commands.js').commands;
 }
 catch(e){
-    console.log("You see, if you don't have a 'commands.js', you can't really command me to do things...");
+    console.log("commands erreur");
     throw new Error(e);
 }
 
 var prefix = "!";
 const ce = require("embed-creator");
 const { get } = require("snekfetch");
-
-var serverParams = {
-    prefix: "!",
-    log_channel: null,
-    welcome_channel: null,
-    logging_enabled: false,
-    welcome_message: null,
-    welcome_enabled: false
-};
 
 function clean(text) {
   if (typeof(text) === "string")
@@ -66,8 +57,8 @@ bot.on('ready', () => {
 	console.log("Myaw");
 	setInterval(() => {
 			const index = Math.floor(Math.random() * (activities_list.length - 1) + 1);
-			bot.user.setActivity(activities_list[index], "WATCHING");
-	}, 5000); //10 seconds=10000
+			bot.user.setActivity(activities_list[index], "STREAMING");
+	}, 5000); //10 secondes=10000
 });
 
 
@@ -85,45 +76,26 @@ bot.on("message", function (msg) {
         }
 
         if(msgcmd == "help"){
-            console.log("treating " + msg.content + " from " + msg.author + " as command");
-            var info = "```";
             if(params){
                 if(commands[params]){
                     msg.channel.sendMessage("Utilise la commande !aide").then(msg => {
                         for(var command in commands[params].commands){
-//                            info += "!" + command;
-                            var usage = commands[params].commands[command].usage;
-//                            if(usage){
-//                                info += " " + usage;
-//                            }
-                            var description = commands[params].commands[command].description;
-//                            if(description){
-//                                info += "\n\t" + description + "\n\n";
-//                            }
                         }
-//                        info += "```";
                     });
                 }
                 else{
-                     msg.channel.sendMessage("I don't believe that's a module, bud.");
+                     msg.channel.sendMessage(".");
                 }
             }
             else{
-//                msg.channel.sendMessage("Please tell me which module you would like to learn about:").then(msg => {
                     for(var module in commands) {
-//                        info += module;
                         var help = commands[module].help;
                         if(help){
-//                            info += " - " + help;
                         }
                         var description = commands[module].description;
                         if(description){
-//                            info += "\n\t" + description + "\n\n";
                         }
                     }
-//                    info += "```";
-//                    msg.channel.sendMessage(info);
-//                });
             }
         }
         else if(msgcmd == "eval"){
@@ -279,7 +251,7 @@ bot.on('message', message => {
 
 //Messages d'informations
 bot.on('guildMemberAdd', member => {
-	var role = member.guild.roles.find("name", "Chaton");
+	var role = member.guild.roles.find("name", "Client");
         member.addRole(role)
 	var channel = bot.channels.get('603555169849966602');
 	if (!channel) return;
@@ -326,6 +298,7 @@ bot.on('message', message => {
   const args = message.content.slice(prefix.length).trim().split(';');
   const command = args.shift().toLowerCase();
   if (command === "sondage") {
+    message.delete();
     if(!message.member.hasPermission("KICK_MEMBERS")) return;
     let question = args[0];
     let choix1 = args[1];
@@ -338,26 +311,95 @@ bot.on('message', message => {
     message.react('1⃣').then(() => message.react('2⃣')).then(() => message.react('3⃣'));
 	})}});
 
+//commande
+
+bot.on('message', message => {
+  const args = message.content.slice(prefix.length + 'commande').trim().split('/');
+  const command = args.shift().toLowerCase();
+  if (command === "commande") {
+    let items = args[0];
+      if (!items)
+        return message.reply("Veuillez specifier un item. `!commande <item> / <quantité>`")
+    let quantité = args[1];
+      if (!quantité)
+        return message.reply("Veuillez specifier une quantité. `!commande <item> / <quantité>`")
+    if (args.length === 0)
+      return message.reply('**Mauvais format:** `!commande <item> / <quantité>`')
+  message.delete();
+  var channel = ("name", `commande-${message.author.tag}`)
+    if (!channel)
+      message.guild.createChannel(`commande-${message.author.tag}`, "texte")
+        .then(function (channel) {
+          channel.setParent('613350330700136479')
+          let PDG = message.guild.roles.find("name", "PDG");
+          let everyone = message.guild.roles.find("name", "@everyone");
+          let commande = message.guild.roles.find("name", "commande");
+            channel.overwritePermissions(PDG, {
+                SEND_MESSAGES: true,
+                READ_MESSAGES: true
+            });
+            channel.overwritePermissions(commande, {
+                SEND_MESSAGES: true,
+                READ_MESSAGES: true
+            });
+            channel.overwritePermissions(everyone, {
+                SEND_MESSAGES: false,
+                ADD_REACTIONS: false,
+                READ_MESSAGES: false
+            });
+            channel.overwritePermissions(message.author, {
+                SEND_MESSAGES: false,
+                READ_MESSAGES: true,
+                ADD_REACTIONS: false
+            });
+        });
+  var embed = new Discord.RichEmbed()
+  .setAuthor('Nouvelle commande de ' + message.author.tag, message.author.avatarURL)
+  .addBlankField()
+  .addField('__Items :__', true)
+  .addField(`**${items}**`, true)
+  .addField('__Quantité :__', true)
+  .addField(`**${quantité}**`, true)
+  .addBlankField()
+  .addField("Merci pour votre commande! Vous serez mentionné ici lorsqu'elle sera prête.")
+	.setTimestamp(new Date())
+	.setColor('#7de5fb');
+	channel.send(embed)
+  .then(function (message) {
+    message.react('1⃣').then(() => message.react('2⃣')).then(() => message.react('3⃣'));
+	})}});
+
+
 //aide
 bot.on('message', message => {
   if (message.content === prefix + 'aide') {
+    message.delete();
     message.channel.send(ce(
       "#010101", {"name": `Aide`, "icon_url": ""}, "", "",
-      [{"name": "!myaw", "value": "Afficher une image de chat aléatoire."},
-      {"name": "!ouaf", "value": "Afficher une image de chien aléatoire."},
+      [{"name": "!commande <item> / <quantité>", "value": "Passer une commande d'item (play.califorcraft.eu)."},
+          {"name": "!myaw", "value": "Afficher une image de chat aléatoire."},
+          {"name": "!ouaf", "value": "Afficher une image de chien aléatoire."},
           {"name": "!image <@pseudo>", "value": "Afficher l'image de profil d'un membre du serveur."},
        	  {"name": "!aléatoire <choix1, choix2, choix3, ..>", "value": "Choisir aléatoirement un des choix donnés."},
           {"name": "!8ball <question>", "value": "Obtenir une réponse à sa question."},
           {"name": "!chat <message>", "value": "Parler avec le bot."},
-          {"name": "!info <@pseudo>", "value": "Afficher le profil d'un membre du serveur."},
-          {"name": "!info add <catégorie> <texte>", "value": "Ajouter une information à son profil."},
-          {"name": "!info aide", "value": "Afficher les catégories d'information."},
-          {"name": "[MOD] !kick <@pseudo> <raison>", "value": "Expulser un membre du serveur."},
-          {"name": "[MOD] !ban <@pseudo> <raison>", "value": "Bannir un membre du serveur."},
-          {"name": "[MOD] !mute <@pseudo> <raison>", "value": "Rendre muet un membre du serveur."},
-          {"name": "[MOD] !unmute <@pseudo>", "value": "Redonner la parole à un membre du serveur."},
-	  {"name": "[MOD] !purge <2-100>", "value": "Supprimer des messages dans un salon textuel."},
-	  {"name": "[MOD] !sondage;<Question>;<Choix1>;<Choix2>;<Choix3>", "value": "Lancer un sondage."}],
+          {"name": "!aide mod", "value": "Afficher les commandes de modération."}],
+      {"text": "", "icon_url": ""}, 
+      {"thumbnail": "", "image": ""}, true
+    ))
+  }
+});
+bot.on('message', message => {
+  if (message.content === prefix + 'aide mod') {
+    message.delete();
+    message.channel.send(ce(
+      "#010101", {"name": `Aide`, "icon_url": ""}, "", "",
+      [{"name": "!kick <@pseudo> <raison>", "value": "Expulser un membre du serveur."},
+          {"name": "!ban <@pseudo> <raison>", "value": "Bannir un membre du serveur."},
+          {"name": "!mute <@pseudo> <raison>", "value": "Rendre muet un membre du serveur."},
+          {"name": "!unmute <@pseudo>", "value": "Redonner la parole à un membre du serveur."},
+	  {"name": "!purge <2-100>", "value": "Supprimer des messages dans un salon textuel."},
+	  {"name": "!sondage;<Question>;<Choix1>;<Choix2>;<Choix3>", "value": "Lancer un sondage."}],
       {"text": "", "icon_url": ""}, 
       {"thumbnail": "", "image": ""}, true
     ))
@@ -382,10 +424,9 @@ bot.on('message', async message => {
   });
 bot.on("message", msg => {
   if (msg.guild === null) return;
-//  if (!msg.content.toLowerCase().startsWith(prefix)) return;
-//    msg.delete();
   if (msg.author.bot) return;
   if (msg.content.toLowerCase().startsWith(prefix + "kick ")) {
+    message.delete();
     if (!msg.member.hasPermission("KICK_MEMBERS")) return;
     var mem = msg.mentions.members.first();
     var mc = msg.content.split(" ")[2];
@@ -400,6 +441,7 @@ bot.on("message", msg => {
     });
   }
   if (msg.content.toLowerCase().startsWith(prefix + "ban ")) {
+    message.delete();
     if (!msg.member.hasPermission("BAN_MEMBERS")) return;
     var mem = msg.mentions.members.first();
     var mc = msg.content.split(" ")[2];
@@ -414,6 +456,7 @@ bot.on("message", msg => {
     });
   }
   if (msg.content.toLowerCase().startsWith(prefix + "mute")) {
+    message.delete();
     if (!msg.member.hasPermission("MUTE_MEMBERS")) return;
     var mem = msg.mentions.members.first();
     var mc = msg.content.split(" ")[2];
@@ -433,6 +476,7 @@ bot.on("message", msg => {
     }
   }
   if (msg.content.toLowerCase().startsWith(prefix + "unmute")) {
+    message.delete();
     if (!msg.member.hasPermission("MUTE_MEMBERS")) return;
     var mem = msg.mentions.members.first();
     if (!mem)
@@ -452,6 +496,7 @@ bot.on("message", msg => {
 //Autres
 bot.on('message', msg => {
 	if(msg.content.startsWith(prefix + 'myaw')) {
+    message.delete();
 		try {
 			get('https://aws.random.cat/meow').then(res => {
 				const embed = new Discord.RichEmbed()
@@ -466,6 +511,7 @@ bot.on('message', msg => {
 
 bot.on('message', msg => {
 	if(msg.content.startsWith(prefix + 'ouaf')) {
+    message.delete();
 		try {
 			get('https://random.dog/woof.json').then(res => {
 				const embed = new Discord.RichEmbed()
