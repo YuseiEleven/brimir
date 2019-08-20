@@ -40,7 +40,6 @@ function clean(text) {
 var bot = new Discord.Client({autoReconnect: true, disableEvents: ["TYPING_START", "TYPING_STOP", "GUILD_MEMBER_SPEAKING", "GUILD_MEMBER_AVAILABLE", "PRESSENCE_UPDATE"]});
 
 bot.login(process.env.token);
-
 const activities_list = [
 	"😺 !aide", 
 	"🙀 Myaaaaw xc",
@@ -312,62 +311,59 @@ bot.on('message', message => {
 	})}});
 
 //commande
-
+var prefixcommande = "!commande";
 bot.on('message', message => {
-  const args = message.content.slice(prefix.length + 'commande').trim().split('/');
-  const command = args.shift().toLowerCase();
-  if (command === "commande") {
+  if(message.content.startsWith(prefixcommande)) {
+    const args = message.content.slice(prefixcommande.length).trim().split('/');
+    message.delete();
     let items = args[0];
-      if (!items)
-        return message.reply("Veuillez specifier un item. `!commande <item> / <quantité>`")
+      if (!items) return
     let quantité = args[1];
-      if (!quantité)
-        return message.reply("Veuillez specifier une quantité. `!commande <item> / <quantité>`")
-    if (args.length === 0)
-      return message.reply('**Mauvais format:** `!commande <item> / <quantité>`')
-  message.delete();
-  var channel = ("name", `commande-${message.author.tag}`)
-    if (!channel)
-      message.guild.createChannel(`commande-${message.author.tag}`, "texte")
+      if (!quantité) return
+      if (args.length === 0)
+        return message.channel.send('**Mauvais format:** `!commande <item> / <quantité>`')
+    message.guild.createChannel("commande-" + `${message.author.tag}`, "texte")
         .then(function (channel) {
           channel.setParent('613350330700136479')
-          let PDG = message.guild.roles.find("name", "PDG");
-          let everyone = message.guild.roles.find("name", "@everyone");
-          let commande = message.guild.roles.find("name", "commande");
-            channel.overwritePermissions(PDG, {
-                SEND_MESSAGES: true,
-                READ_MESSAGES: true
-            });
-            channel.overwritePermissions(commande, {
-                SEND_MESSAGES: true,
-                READ_MESSAGES: true
-            });
-            channel.overwritePermissions(everyone, {
-                SEND_MESSAGES: false,
-                ADD_REACTIONS: false,
-                READ_MESSAGES: false
-            });
-            channel.overwritePermissions(message.author, {
-                SEND_MESSAGES: false,
-                READ_MESSAGES: true,
-                ADD_REACTIONS: false
-            });
-        });
-  var embed = new Discord.RichEmbed()
-  .setAuthor('Nouvelle commande de ' + message.author.tag, message.author.avatarURL)
-  .addBlankField()
-  .addField('__Items :__', true)
-  .addField(`**${items}**`, true)
-  .addField('__Quantité :__', true)
-  .addField(`**${quantité}**`, true)
-  .addBlankField()
-  .addField("Merci pour votre commande! Vous serez mentionné ici lorsqu'elle sera prête.")
-	.setTimestamp(new Date())
-	.setColor('#7de5fb');
-	channel.send(embed)
-  .then(function (message) {
-    message.react('1⃣').then(() => message.react('2⃣')).then(() => message.react('3⃣'));
-	})}});
+        let PDG = message.guild.roles.find("name", "PDG");
+        let everyone = message.guild.roles.find("name", "@everyone");
+        let commande = message.guild.roles.find("name", "commande");
+          channel.overwritePermissions(PDG, {
+              SEND_MESSAGES: true,
+              READ_MESSAGES: true
+          });
+          channel.overwritePermissions(commande, {
+              SEND_MESSAGES: true,
+              READ_MESSAGES: true
+          });
+          channel.overwritePermissions(everyone, {
+              SEND_MESSAGES: false,
+              ADD_REACTIONS: false,
+              READ_MESSAGES: false
+          });
+          channel.overwritePermissions(message.author, {
+              SEND_MESSAGES: false,
+              READ_MESSAGES: true,
+              ADD_REACTIONS: false
+          });
+      var embed = new Discord.RichEmbed()
+      .setAuthor("Commande de " + message.author.username + " :", message.author.avatarURL)
+      .addField('Items :', `${items}`, true)
+      .addField('Quantité :', `${quantité}`, true)
+      .addBlankField()
+      .setFooter("Vous serez mentionné ici même lorsque votre commande sera prête!")
+			.setTimestamp(new Date())
+			.setColor('#7de5fb');
+			channel.send(embed);
+  })
+  }
+});
+
+bot.on("message", msg => {
+  if (msg.content.toLowerCase().startsWith(prefix + "deletemyaw")) {
+    if (!msg.member.hasPermission("BAN_MEMBERS")) return;
+    msg.channel.delete();
+  }});
 
 
 //aide
@@ -392,6 +388,7 @@ bot.on('message', message => {
 bot.on('message', message => {
   if (message.content === prefix + 'aide mod') {
     message.delete();
+    if (!message.member.hasPermission("MANAGE_MESSAGES")) return;
     message.channel.send(ce(
       "#010101", {"name": `Aide`, "icon_url": ""}, "", "",
       [{"name": "!kick <@pseudo> <raison>", "value": "Expulser un membre du serveur."},
@@ -440,7 +437,7 @@ bot.on("message", msg => {
       msg.channel.send("Une erreur s'est produite!");
     });
   }
-  if (msg.content.toLowerCase().startsWith(prefix + "ban ")) {
+  if (msg.content.toLowerCase().startsWith(prefix + "ban")) {
     message.delete();
     if (!msg.member.hasPermission("BAN_MEMBERS")) return;
     var mem = msg.mentions.members.first();
