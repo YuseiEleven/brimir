@@ -417,6 +417,51 @@ bot.on('message', message => {
   }
 });
 
+//Candidature
+var prefixcandidature = "!candidature";
+bot.on('message', message => {
+  if(message.content.startsWith(prefixcandidature)) {
+    message.delete();
+    message.guild.createChannel("candidature-" + `${message.author.tag}`, "texte")
+        .then(function (channel) {
+          channel.setParent('613699791813214218')
+        let PDG = message.guild.roles.find("name", "PDG");
+        let everyone = message.guild.roles.find("name", "@everyone");
+          channel.overwritePermissions(PDG, {
+              SEND_MESSAGES: true,
+              READ_MESSAGES: true
+          });
+          channel.overwritePermissions(everyone, {
+              SEND_MESSAGES: false,
+              ADD_REACTIONS: false,
+              READ_MESSAGES: false
+          });
+          channel.overwritePermissions(message.author, {
+              SEND_MESSAGES: true,
+              READ_MESSAGES: true,
+              ADD_REACTIONS: false
+          });
+      var embed = new Discord.RichEmbed()
+      .setAuthor("Candidature de " + message.author.username + " :", message.author.avatarURL)
+      .addBlankField()
+      .addField('Votre candidature devra aborder les thèmes suivant:', ``, false)
+      .addBlankField()
+      .addField('Présentation IG (et Irl si vous le souhaitez) :', `Pseudo, métier, niveau de votre métier, date d'arrivé sur le serveur, vos horraires de connexions, vos qualités et défauts, etc.`, false)
+      .addField('Expériences professionnelles :', `Les entreprieses pour lesquelles vous avez aupparavant travaillé, quel poste, combien de temps, pourquoi vous n'êtes plus dans ces entreprises, etc.`, false)
+      .addField('Motivations :', `Exposez vos motivations dans cette section.`, false)
+      .addField('Répondre aux questions suivantes :', `Pourquoi rejoindre l'entreprise Brimir et pas une autre? Pourquoi vous et pas un autre? Que pensez-vous apporter à l'entreprise?`, false)
+      .addField('Autres :', `Si vous avez des choses à ajouter.`, false)
+      .addBlankField()
+      .setFooter("Vous serez mentionné ici après étude de votre candidature.")
+			.setTimestamp(new Date())
+			.setColor('#66023C');
+			channel.send(embed);
+  })
+  }
+});
+
+
+//Fermer
 bot.on("message", msg => {
   if (msg.content.toLowerCase().startsWith(prefix + "fermer")) {
     if (!msg.member.hasPermission("BAN_MEMBERS")) return;
