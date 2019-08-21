@@ -367,15 +367,15 @@ bot.on('message', message => {
     const args = message.content.slice(prefixcommandeimmo.length).trim().split('/');
     message.delete();
     let recherche = args[0];
-      if (!recherche) return message.channel.send('**Veuillez préciser la nature de votre recherce (ex: achat, location, vente):** !immobilier ``<achat, location, vente>`` / <budget, loyer, prix vente> / <taille, condition, nature> / <ville>')
+      if (!recherche) return message.channel.send('**Veuillez préciser la nature de votre recherce (ex: achat, location):** !immobilier ``<achat, location>`` / <budget, loyer> / <taille, condition> / <ville>')
     let budget = args[1];
-      if (!budget) return message.channel.send('**Veuillez préciser votre budget (ex: 50 000$, 200$ par jour):** `!immobilier <achat, location, vente> / ``<budget, loyer, prix vente>`` / <taille, condition, nature> / <ville>')
+      if (!budget) return message.channel.send('**Veuillez préciser votre budget (ex: 50 000$, 200$ par jour):** `!immobilier <achat, location> / ``<budget, loyer>`` / <taille, condition> / <ville>')
     let condition = args[2];
-      if (!condition) return message.channel.send('**Veuillez préciser quelques conditions (ex: taille, étage):** !immobilier <achat, location, vente> / <budget, loyer, prix vente> / ``<taille, condition, nature>`` / <ville>')
+      if (!condition) return message.channel.send('**Veuillez préciser quelques conditions (ex: taille, étage):** !immobilier <achat, location> / <budget, loyer> / ``<taille, condition>`` / <ville>')
     let ville = args[3];
-      if (!ville) return message.channel.send('**Veuillez préciez une ville (ex: California, Westham, Deus Civitas):** !immobilier <achat, location, vente> / <budget, loyer, prix vente> / <taille, condition, nature> / ``<ville>``')
+      if (!ville) return message.channel.send('**Veuillez préciez une ville (ex: California, Westham, Deus Civitas):** !immobilier <achat, location> / <budget, loyer> / <taille, condition> / ``<ville>``')
       if (args.length === 0)
-        return message.channel.send('**Mauvais format:** !immobilier <achat, location, vente> / <budget, loyer, prix vente> / <taille, condition, nature> / <ville>')
+        return message.channel.send('**Mauvais format:** !immobilier <achat, location> / <budget, loyer> / <taille, condition> / <ville>')
     message.guild.createChannel("immobilier-" + `${message.author.tag}`, "texte")
         .then(function (channel) {
           channel.setParent('613682044462956544')
