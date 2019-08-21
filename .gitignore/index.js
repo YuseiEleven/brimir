@@ -417,6 +417,66 @@ bot.on('message', message => {
   }
 });
 
+//Pubimmo
+var prefixcommandeaideimmo = "!aideimmobilier";
+bot.on('message', message => {
+  if(message.content.startsWith(prefixcommandeaideimmo)) {
+    const args = message.content.slice(prefixcommandeaideimmo.length).trim().split('/');
+    message.delete();
+    let aide = args[0];
+      if (!aide) return message.channel.send("**Veuillez préciser si il s'agit d'une vente ou d'une location:** !immobilier ``<Vente, location>`` / <Habitation, Commerce> / <Prix, loyer> / <Description> / <Ville>")
+    let nature = args[1];
+      if (!nature) return message.channel.send('**Veuillez préciser la nature du bien (ex: commerce, habitation):** !immobilier <Vente, location> / ``<Habitation, Commerce>`` / <Prix, loyer> / <Description> / <Ville>')
+    let prix = args[2];
+      if (!prix) return message.channel.send('**Veuillez préciser le prix ou loyer voulu (ex: 50 000$, 200$ par jour):** `!immobilier <Vente, location> / <Habitation, Commerce> / ``<Prix, loyer>`` / <Description> / <Ville>')
+    let description = args[3];
+      if (!description) return message.channel.send("**Veuillez ajouter une description du bien (ex: taille, nombre d'étage):** !immobilier <Vente, location> / <Habitation, Commerce> / <Prix, loyer> / ``<Description>`` / <Ville>")
+    let ville = args[4];
+      if (!ville) return message.channel.send("**Veuillez préciez une ville, et si possible le nom de la rue (ex: California, Westham, Deus Civitas):** !immobilier <Vente, location> / <Habitation, Commerce> / <Prix, loyer> / <Description> / ``<Ville>``")
+      if (args.length === 0)
+        return message.channel.send('**Mauvais format:** !immobilier ``<Vente, location>`` / ``<Habitation, Commerce>`` / ``<Prix, loyer>`` / ``<Description>`` / ``<Ville>``')
+    message.guild.createChannel("aideimmobilier-" + `${message.author.tag}`, "texte")
+        .then(function (channel) {
+          channel.setParent('613682044462956544')
+        let PDG = message.guild.roles.find("name", "PDG");
+        let everyone = message.guild.roles.find("name", "@everyone");
+        let immobilier = message.guild.roles.find("name", "immobilier");
+          channel.overwritePermissions(PDG, {
+              SEND_MESSAGES: true,
+              READ_MESSAGES: true
+          });
+          channel.overwritePermissions(immobilier, {
+              SEND_MESSAGES: true,
+              READ_MESSAGES: true
+          });
+          channel.overwritePermissions(everyone, {
+              SEND_MESSAGES: false,
+              ADD_REACTIONS: false,
+              READ_MESSAGES: false
+          });
+          channel.overwritePermissions(message.author, {
+              SEND_MESSAGES: true,
+              READ_MESSAGES: true,
+              ADD_REACTIONS: false
+          });
+      var embed = new Discord.RichEmbed()
+      .setAuthor("Demande d'aide immobilière " + message.author.username + " :", message.author.avatarURL)
+      .addBlankField()
+      .addField('Nature de la demande :', `${aide}`, false)
+      .addBlankField()
+      .addField('Nature du bien :', `${nature}`, true)
+      .addField('Prix/Loyer :', `${prix}`, true)
+      .addField('Description :', `${description}`, true)
+      .addField('Ville :', `${ville}`, true)
+      .addBlankField()
+      .setFooter("Vous serez mentionné ici même lorsque qu'un agent immobilier sera disponible! Vous pouvez également ajouter quelques screenshots de votre bien.")
+			.setTimestamp(new Date())
+			.setColor('#3bdf4e');
+			channel.send(embed);
+  })
+  }
+});
+
 //Candidature
 var prefixcandidature = "!candidature";
 bot.on('message', message => {
