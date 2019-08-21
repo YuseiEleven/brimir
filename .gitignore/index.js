@@ -444,7 +444,7 @@ bot.on('message', message => {
       var embed = new Discord.RichEmbed()
       .setAuthor("Candidature de " + message.author.username + " :", message.author.avatarURL)
       .addBlankField()
-      .addField('Votre candidature devra aborder les thèmes suivant:', ``, false)
+      .setTitle('Votre candidature devra aborder les thèmes suivant:')
       .addBlankField()
       .addField('Présentation IG (et Irl si vous le souhaitez) :', `Pseudo, métier, niveau de votre métier, date d'arrivé sur le serveur, vos horraires de connexions, vos qualités et défauts, etc.`, false)
       .addField('Expériences professionnelles :', `Les entreprieses pour lesquelles vous avez aupparavant travaillé, quel poste, combien de temps, pourquoi vous n'êtes plus dans ces entreprises, etc.`, false)
