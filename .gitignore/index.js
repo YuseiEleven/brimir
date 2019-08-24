@@ -655,7 +655,7 @@ bot.on("message", msg => {
 //Autres
 bot.on('message', msg => {
 	if(msg.content.startsWith(prefix + 'myaw')) {
-    message.delete();
+    msg.delete();
 		try {
 			get('https://aws.random.cat/meow').then(res => {
 				const embed = new Discord.RichEmbed()
@@ -670,7 +670,7 @@ bot.on('message', msg => {
 
 bot.on('message', msg => {
 	if(msg.content.startsWith(prefix + 'ouaf')) {
-    message.delete();
+    msg.delete();
 		try {
 			get('https://random.dog/woof.json').then(res => {
 				const embed = new Discord.RichEmbed()
