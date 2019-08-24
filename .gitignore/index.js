@@ -237,13 +237,13 @@ bot.on('message', message => {
   if(message.content === 'Paolo')
 		message.channel.send("Pfpfpf il est pas bo :x", {tts: true});
   if(message.content === 'Bonjour')
-		message.channel.send("Bonzour :3", {tts: true});
+		message.channel.send("Bonzour :3", {tts: false});
   if(message.content === 'Salut')
-		message.channel.send("Bonzour :3", {tts: true});
+		message.channel.send("Bonzour :3", {tts: false});
   if(message.content === 'Coucou')
-		message.channel.send("Bonzour :3", {tts: true});
+		message.channel.send("Bonzour :3", {tts: false});
   if(message.content === 'Bonsoir')
-		message.channel.send("Bonswar :3", {tts: true});
+		message.channel.send("Bonswar :3", {tts: false});
 });
 
 
