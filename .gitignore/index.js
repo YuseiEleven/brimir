@@ -233,9 +233,9 @@ bot.on('voiceStateUpdate', (oldMember, newMember) => {
 
 bot.on('message', message => {
   if(message.content === 'Alycia')
-		message.channel.send("La plus mignonne de l'univers, elle est.. myaaaaaw :$", {tts: true});
+		message.channel.send("La plus mignonne de l'univers, elle est.. myaaaaaw :$", {tts: false});
   if(message.content === 'Paolo')
-		message.channel.send("Pfpfpf il est pas bo :x", {tts: true});
+		message.channel.send("Pfpfpf il est pas bo :x", {tts: false});
   if(message.content === 'Bonjour')
 		message.channel.send("Bonzour :3", {tts: false});
   if(message.content === 'Salut')
