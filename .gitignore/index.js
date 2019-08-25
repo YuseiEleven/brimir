@@ -342,7 +342,7 @@ bot.on('message', message => {
               READ_MESSAGES: false
           });
           channel.overwritePermissions(message.author, {
-              SEND_MESSAGES: false,
+              SEND_MESSAGES: true,
               READ_MESSAGES: true,
               ADD_REACTIONS: false
           });
@@ -355,7 +355,8 @@ bot.on('message', message => {
       .setFooter("Vous serez mentionné ici même lorsque votre commande sera prête!")
 			.setTimestamp(new Date())
 			.setColor('#7de5fb');
-			channel.send(embed);
+      channel.send(embed);
+      channel.send("Si votre commande est plus longue, merci de faire une liste de tout les items que vous souhaitez acheter ci-dessous! :3")
   })
   }
 });
@@ -411,12 +412,11 @@ bot.on('message', message => {
       .addBlankField()
       .setFooter("Vous serez mentionné ici même lorsque qu'un agent immobilier sera disponible!")
 			.setTimestamp(new Date())
-			.setColor('#7de5fb');
+			.setColor('#3bdf4e');
 			channel.send(embed);
   })
   }
 });
-
 //Pubimmo
 var prefixcommandeaideimmo = "!aideimmobilier";
 bot.on('message', message => {
@@ -477,6 +477,8 @@ bot.on('message', message => {
   }
 });
 
+
+
 //Candidature
 var prefixcandidature = "!candidature";
 bot.on('message', message => {
@@ -534,7 +536,10 @@ bot.on('message', message => {
     message.delete();
     message.channel.send(ce(
       "#010101", {"name": `Aide`, "icon_url": ""}, "", "",
-      [{"name": "!commande <item> / <quantité>", "value": "Passer une commande d'item (play.califorcraft.eu)."},
+      [{"name": "!commande <item> / <quantité>", "value": "Passer une commande d'item, si la commande est longue merci de faire votre liste d'items dans le salon qui s'ouvre à votre nom (play.califorcraft.eu)."},
+      {"name": "!immobilier <achat,location> / <budget> / <taille,étage> / <ville>", "value": "Demande d'aide immobilière pour trouver l'habitation ou commerce de vos rêves! (play.califorcraft.eu)."},
+      {"name": "!aideimmobilier <vente,location> / <habitation,commerce> / <prix> / <description> / <ville>", "value": "Demande d'aide immobilière pour vous trouver un acheteur ou locataire. (play.califorcraft.eu)."},
+      {"name": "!candidature", "value": "Ouvrir un dossier de candidature (play.califorcraft.eu)."},
           {"name": "!myaw", "value": "Afficher une image de chat aléatoire."},
           {"name": "!ouaf", "value": "Afficher une image de chien aléatoire."},
           {"name": "!image <@pseudo>", "value": "Afficher l'image de profil d'un membre du serveur."},
@@ -585,7 +590,7 @@ bot.on("message", msg => {
   if (msg.guild === null) return;
   if (msg.author.bot) return;
   if (msg.content.toLowerCase().startsWith(prefix + "kick ")) {
-    message.delete();
+    msg.delete();
     if (!msg.member.hasPermission("KICK_MEMBERS")) return;
     var mem = msg.mentions.members.first();
     var mc = msg.content.split(" ")[2];
@@ -600,7 +605,7 @@ bot.on("message", msg => {
     });
   }
   if (msg.content.toLowerCase().startsWith(prefix + "ban")) {
-    message.delete();
+    msg.delete();
     if (!msg.member.hasPermission("BAN_MEMBERS")) return;
     var mem = msg.mentions.members.first();
     var mc = msg.content.split(" ")[2];
@@ -615,7 +620,7 @@ bot.on("message", msg => {
     });
   }
   if (msg.content.toLowerCase().startsWith(prefix + "mute")) {
-    message.delete();
+    msg.delete();
     if (!msg.member.hasPermission("MUTE_MEMBERS")) return;
     var mem = msg.mentions.members.first();
     var mc = msg.content.split(" ")[2];
@@ -635,7 +640,7 @@ bot.on("message", msg => {
     }
   }
   if (msg.content.toLowerCase().startsWith(prefix + "unmute")) {
-    message.delete();
+    msg.delete();
     if (!msg.member.hasPermission("MUTE_MEMBERS")) return;
     var mem = msg.mentions.members.first();
     if (!mem)
@@ -655,7 +660,7 @@ bot.on("message", msg => {
 //Autres
 bot.on('message', msg => {
 	if(msg.content.startsWith(prefix + 'myaw')) {
-    msg.delete();
+    message.delete();
 		try {
 			get('https://aws.random.cat/meow').then(res => {
 				const embed = new Discord.RichEmbed()
